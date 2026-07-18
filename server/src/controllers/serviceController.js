@@ -1,0 +1,68 @@
+const Service = require("../models/Service");
+
+const createService = async (req, res) => {
+  try {
+    const { name, description, duration, price } = req.body;
+    const service = await Service.create({
+      provider: req.user._id,
+      name,
+      description,
+      duration,
+      price,
+    });
+    res.status(201).json(service);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getMyServices = async (req, res) => {
+  try {
+    const services = await Service.find({ provider: req.user._id });
+    res.status(200).json(services);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+const updateService = async (req, res) => {
+  try {
+    const service = await Service.findById(req.params.id);
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+    if (service.provider.toString() !== req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to update this service" });
+    }
+    const { name, description, duration, price, isActive } = req.body;
+    if (name) service.name = name;
+    if (description !== undefined) service.description = description;
+    if (duration) service.duration = duration;
+    if (price) service.price = price;
+    if (isActive !== undefined) service.isActive = isActive;
+
+    const updatedService = await service.save();
+    res.status(200).json(updatedService);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+const deleteService = async (req, res) => {
+  try {
+    const service = await Service.findById(req.params.id);
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+    if (service.provider.toString() !== req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this service" });
+    }
+    await service.deleteOne();
+    res.status(200).json({ message: "Service deleted" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+module.exports = { createService, getMyServices, updateService, deleteService };
