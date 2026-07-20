@@ -11,6 +11,7 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use("/api/auth", require("./src/routes/authRoutes"));
 app.use("/api/services", require("./src/routes/serviceRoutes"));
+app.use("/api/availability", require("./src/routes/availabilityRoutes"));
 
 mongoose
   .connect(process.env.MONGO_URI)

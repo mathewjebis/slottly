@@ -24,6 +24,17 @@ const getMyServices = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const getProviderServices = async (req, res) => {
+  try {
+    const services = await Service.find({
+      provider: req.params.providerId,
+      isActive: true,
+    });
+    res.status(200).json(services);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 const updateService = async (req, res) => {
   try {
     const service = await Service.findById(req.params.id);
@@ -65,4 +76,10 @@ const deleteService = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-module.exports = { createService, getMyServices, updateService, deleteService };
+module.exports = {
+  createService,
+  getMyServices,
+  updateService,
+  deleteService,
+  getProviderServices,
+};

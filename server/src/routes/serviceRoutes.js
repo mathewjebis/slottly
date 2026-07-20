@@ -1,5 +1,5 @@
 const express = require("express");
-const protect = require("../middleware/authMiddleware");
+const { protect, requireRole } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -8,11 +8,18 @@ const {
   getMyServices,
   updateService,
   deleteService,
+  getProviderServices,
 } = require("../controllers/serviceController");
 
-router.post("/", protect, createService);
-router.get("/my-services", protect, getMyServices);
-router.put("/:id", protect, updateService);
-router.delete("/:id", protect, deleteService);
+router.post("/", protect, requireRole("provider"), createService);
+router.get("/my-services", protect, requireRole("provider"), getMyServices);
+router.put("/:id", protect, requireRole("provider"), updateService);
+router.delete("/:id", protect, requireRole("provider"), deleteService);
+router.get(
+  "/:providerId",
+  protect,
+  requireRole("provider", "customer"),
+  getProviderServices,
+);
 
 module.exports = router;
