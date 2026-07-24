@@ -1,7 +1,6 @@
 const express = require("express");
-const { protect, requireRole } = require("../middleware/authMiddleware");
-
 const router = express.Router();
+const { protect, requireRole } = require("../middleware/authMiddleware");
 
 const {
   createService,
@@ -10,10 +9,23 @@ const {
   deleteService,
   getProviderServices,
 } = require("../controllers/serviceController");
+const { validateService } = require("../middleware/validationMiddleware");
 
-router.post("/", protect, requireRole("provider"), createService);
+router.post(
+  "/",
+  protect,
+  requireRole("provider"),
+  validateService,
+  createService,
+);
 router.get("/my-services", protect, requireRole("provider"), getMyServices);
-router.put("/:id", protect, requireRole("provider"), updateService);
+router.put(
+  "/:id",
+  protect,
+  requireRole("provider"),
+  validateService,
+  updateService,
+);
 router.delete("/:id", protect, requireRole("provider"), deleteService);
 router.get(
   "/:providerId",

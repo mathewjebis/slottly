@@ -4,12 +4,27 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const morgan = require("morgan");
+const rateLimit = require("express-rate-limit");
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { message: "Too many requests, please try again later" },
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { message: "Too many login attempts, please try again later" },
+});
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
-app.use("/api/auth", require("./src/routes/authRoutes"));
+app.use(limiter);
+
+app.use("/api/auth", authLimiter, require("./src/routes/authRoutes"));
 app.use("/api/services", require("./src/routes/serviceRoutes"));
 app.use("/api/availability", require("./src/routes/availabilityRoutes"));
 app.use("/api/timeoff", require("./src/routes/timeOffRoutes"));

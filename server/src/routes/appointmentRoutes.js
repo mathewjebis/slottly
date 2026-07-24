@@ -9,8 +9,22 @@ const {
   cancelAppointment,
 } = require("../controllers/appointmentController");
 
-router.get("/available-slots", protect, getSlots);
-router.post("/", protect, requireRole("customer"), createAppointment);
+const { validateBooking } = require("../middleware/validationMiddleware");
+
+router.get(
+  "/available-slots",
+  protect,
+  requireRole("provider", "customer"),
+  getSlots,
+);
+router.post(
+  "/",
+  protect,
+  requireRole("customer"),
+  validateBooking,
+  createAppointment,
+);
 router.get("/my-appointments", protect, getMyAppointments);
 router.patch("/:id/cancel", protect, cancelAppointment);
+
 module.exports = router;
