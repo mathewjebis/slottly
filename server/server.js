@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
+const cookieParser = require("cookie-parser");
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -14,12 +15,13 @@ const limiter = rateLimit({
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: 10,
   message: { message: "Too many login attempts, please try again later" },
 });
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors());
 app.use(morgan("dev"));
 app.use(limiter);
