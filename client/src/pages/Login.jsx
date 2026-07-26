@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
+import Logo from "../components/Logo";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -34,6 +35,9 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-slate-900 rounded-2xl p-8 border border-slate-800">
+        <div className="mb-6">
+          <Logo />
+        </div>
         <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>
         <p className="text-slate-400 mb-8">Sign in to your Slottly account</p>
 
