@@ -1,6 +1,8 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
+const sendEmail = require("../utils/sendEmail");
 
 const register = async (req, res) => {
   try {
@@ -85,4 +87,64 @@ const logout = async (req, res) => {
 const getMe = async (req, res) => {
   res.status(200).json(req.user);
 };
-module.exports = { register, login, getMe, logout };
+
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "No account with that email" });
+    }
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 30 * 60 * 1000;
+    await user.save();
+
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+
+    await sendEmail({
+      to: user.email,
+      subject: "Reset your Slottly password",
+      html: `
+        <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
+          <h2 style="color:#4f46e5">Reset your password</h2>
+          <p>You requested a password reset for your Slottly account.</p>
+          <a href="${resetUrl}" style="display:inline-block;background:#4f46e5;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;margin:16px 0">Reset Password</a>
+          <p style="color:#6b7280;font-size:14px">This link expires in 30 minutes. If you didn't request this, ignore this email.</p>
+        </div>
+      `,
+    });
+    res.status(200).json({ message: "Reset link sent to your email" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired reset link" });
+    }
+    user.password = password;
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+    await user.save();
+
+    res.status(200).json({ message: "Password reset succesfull" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+module.exports = {
+  register,
+  login,
+  getMe,
+  logout,
+  forgotPassword,
+  resetPassword,
+};

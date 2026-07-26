@@ -70,6 +70,16 @@ const validateBooking = [
   validate,
 ];
 
+const validateForgotPassword = [
+  body("email").isEmail().withMessage("Please provide a valid email"),
+  validate,
+];
+const validateResetPassword = [
+  body("password")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters"),
+  validate,
+];
 module.exports = {
   validateRegister,
   validateLogin,
@@ -77,4 +87,6 @@ module.exports = {
   validateAvailability,
   validateTimeOff,
   validateBooking,
+  validateForgotPassword,
+  validateResetPassword,
 };
