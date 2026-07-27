@@ -1,28 +1,29 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
-import { useAuth } from "../context/AuthContext";
-
 import AuthLayout from "../components/AuthLayout";
 
-const Login = () => {
-  const [email, setEmail] = useState("");
+const ResetPassword = () => {
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
-  const { login } = useAuth();
+  const { token } = useParams();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
-      const res = await api.post("/auth/login", { email, password });
-      login(res.data);
-      navigate("/dashboard");
+      await api.post(`/auth/reset-password/${token}`, { password });
+      navigate("/login");
     } catch (err) {
       const data = err.response?.data;
       setError(
@@ -32,11 +33,10 @@ const Login = () => {
       setLoading(false);
     }
   };
-
   return (
     <AuthLayout>
-      <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>
-      <p className="text-slate-400 mb-8">Sign in to your Slottly account</p>
+      <h1 className="text-2xl font-bold text-white mb-2">Set new password</h1>
+      <p className="text-slate-400 mb-8">Must be at least 6 characters</p>
 
       {error && (
         <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg mb-6 text-sm">
@@ -45,32 +45,10 @@ const Login = () => {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2">
-            Email
-          </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
-            placeholder="you@example.com"
-          />
-        </div>
-
         <div className="relative">
-          <div className="flex items-center justify-between mb-2">
-            <label className="block text-sm font-medium text-slate-300">
-              Password
-            </label>
-            <Link
-              to="/forgot-password"
-              className="text-sm text-indigo-400 hover:text-indigo-300"
-            >
-              Forgot password?
-            </Link>
-          </div>
-
+          <label className="block text-sm font-medium text-slate-300 mb-2">
+            New Password
+          </label>
           <input
             type={showPassword ? "text" : "password"}
             value={password}
@@ -87,23 +65,35 @@ const Login = () => {
           </button>
         </div>
 
+        <div>
+          <label className="block text-sm font-medium text-slate-300 mb-2">
+            Confirm Password
+          </label>
+          <input
+            type={showPassword ? "text" : "password"}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
+            placeholder="••••••••"
+          />
+        </div>
+
         <button
           type="submit"
           disabled={loading}
           className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition"
         >
-          {loading ? "Signing in..." : "Sign in"}
+          {loading ? "Resetting..." : "Reset password"}
         </button>
       </form>
 
       <p className="text-slate-400 text-sm text-center mt-6">
-        Don't have an account?{" "}
-        <Link to="/register" className="text-indigo-400 hover:text-indigo-300">
-          Register
+        <Link to="/login" className="text-indigo-400 hover:text-indigo-300">
+          Back to login
         </Link>
       </p>
     </AuthLayout>
   );
 };
 
-export default Login;
+export default ResetPassword;
