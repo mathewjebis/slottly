@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import AuthLayout from "../components/AuthLayout";
-import Logo from "../components/Logo";
+
 
 const Register = () => {
   const [name, setName] = useState("");

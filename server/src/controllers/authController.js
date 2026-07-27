@@ -135,7 +135,7 @@ const resetPassword = async (req, res) => {
     user.resetPasswordExpires = null;
     await user.save();
 
-    res.status(200).json({ message: "Password reset succesfull" });
+    res.status(200).json({ message: "Password reset successfull" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

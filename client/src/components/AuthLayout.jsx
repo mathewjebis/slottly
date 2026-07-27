@@ -6,7 +6,7 @@ const AuthLayout = ({ children }) => {
       <div className="absolute top-[-20%] left-[-10%] w-125 h-125 bg-indigo-600/30 rounded-full blur-[120px] animate-pulse" />
       <div className="absolute bottom-[-20%] right-[-10%] w-125 h-125 bg-violet-600/30 rounded-full blur-[120px] animate-pulse" />
       <div className="relative z-10 w-full max-w-5xl flex rounded-2xl overflow-hidden shadow-2xl">
-        <div className="hidden lg:flex flex-col  w-[45%] bg-indigo-950/80 border border-indigo-500/30 backdrop-blur-sm p-10">
+        <div className="hidden lg:flex flex-col   w-[45%] bg-indigo-950/80 border border-indigo-500/30 backdrop-blur-sm p-10">
           <Logo size="lg" />
           <div>
             <h2 className="text-2xl font-bold text-white mb-4 leading-tight mt-8">
