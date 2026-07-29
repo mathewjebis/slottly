@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import Navbar from "./components/Navbar";
 
 const PrivateRoute = ({ children }) => {
   const { user } = useAuth();

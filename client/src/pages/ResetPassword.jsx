@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import AuthLayout from "../components/AuthLayout";
+import Logo from "../components/Logo";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -35,7 +36,13 @@ const ResetPassword = () => {
   };
   return (
     <AuthLayout>
-      <h1 className="text-2xl font-bold text-white mb-2">Set new password</h1>
+      <div>
+        <Logo />
+        <br />
+      </div>
+      <h1 className="text-2xl font-bold text-white mb-2 mt-3">
+        Set new password
+      </h1>
       <p className="text-slate-400 mb-8">Must be at least 6 characters</p>
 
       {error && (

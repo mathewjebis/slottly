@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
 import AuthLayout from "../components/AuthLayout";
+import Logo from "../components/Logo";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -29,6 +30,13 @@ const ForgotPassword = () => {
 
   return (
     <AuthLayout>
+      {!success && (
+        <div>
+          <Logo />
+          <br />
+        </div>
+      )}
+
       {success ? (
         <div className="flex flex-col items-center justify-center min-h-75 text-center">
           <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-6">
@@ -47,7 +55,7 @@ const ForgotPassword = () => {
         </div>
       ) : (
         <>
-          <h1 className="text-2xl font-bold text-white mb-2">
+          <h1 className="text-2xl font-bold text-white mb-2 mt-3">
             Forgot password?
           </h1>
           <p className="text-slate-400 mb-8">

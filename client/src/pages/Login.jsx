@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
-
+import Logo from "../components/Logo";
 import AuthLayout from "../components/AuthLayout";
 
 const Login = () => {
@@ -35,7 +35,11 @@ const Login = () => {
 
   return (
     <AuthLayout>
-      <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>
+      <div className="mt-1">
+        <Logo />
+      </div>
+
+      <h1 className="text-2xl font-bold text-white mb-2 mt-4">Welcome back</h1>
       <p className="text-slate-400 mb-8">Sign in to your Slottly account</p>
 
       {error && (

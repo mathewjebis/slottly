@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import AuthLayout from "../components/AuthLayout";
-
+import Logo from "../components/Logo";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -42,6 +42,10 @@ const Register = () => {
 
   return (
     <AuthLayout>
+      <div>
+        <Logo />
+        <br />{" "}
+      </div>
       <h1 className="text-2xl font-bold text-white mb-2">Create an account</h1>
       <p className="text-slate-400 mb-6">Join Slottly today</p>
 
