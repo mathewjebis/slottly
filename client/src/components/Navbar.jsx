@@ -1,22 +1,14 @@
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import Logo from "./Logo";
-import api from "../api/axios";
-
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    try {
-      await api.post("/auth/logout");
-    } catch (err) {
-      console.error(err);
-    } finally {
-      logout();
-      navigate("/login");
-    }
+    await logout();
+    navigate("/login");
   };
   return (
     <nav className="bg-slate-900 border-b border-slate-800 px-6 py-4">
