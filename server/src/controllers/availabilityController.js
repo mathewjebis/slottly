@@ -10,9 +10,13 @@ const setAvailability = async (req, res) => {
     );
     res.status(200).json(availability);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 };
+
 const getAvailability = async (req, res) => {
   try {
     const availability = await Availability.findOne({
@@ -25,7 +29,11 @@ const getAvailability = async (req, res) => {
     }
     res.status(200).json(availability);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 };
+
 module.exports = { setAvailability, getAvailability };

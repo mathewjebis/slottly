@@ -33,7 +33,8 @@ const register = async (req, res) => {
       role: user.role,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Something went wrong. Please try again later." });
   }
 };
 
@@ -68,7 +69,8 @@ const login = async (req, res) => {
       role: user.role,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Something went wrong. Please try again later." });
   }
 };
 
@@ -81,9 +83,11 @@ const logout = async (req, res) => {
     });
     res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Something went wrong. Please try again later." });
   }
 };
+
 const getMe = async (req, res) => {
   res.status(200).json(req.user);
 };
@@ -116,9 +120,11 @@ const forgotPassword = async (req, res) => {
     });
     res.status(200).json({ message: "Reset link sent to your email" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Something went wrong. Please try again later." });
   }
 };
+
 const resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
@@ -137,14 +143,9 @@ const resetPassword = async (req, res) => {
 
     res.status(200).json({ message: "Password reset successful" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Something went wrong. Please try again later." });
   }
 };
-module.exports = {
-  register,
-  login,
-  getMe,
-  logout,
-  forgotPassword,
-  resetPassword,
-};
+
+module.exports = { register, login, getMe, logout, forgotPassword, resetPassword };

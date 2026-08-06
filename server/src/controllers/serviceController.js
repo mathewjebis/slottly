@@ -12,7 +12,10 @@ const createService = async (req, res) => {
     });
     res.status(201).json(service);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 };
 
@@ -21,9 +24,13 @@ const getMyServices = async (req, res) => {
     const services = await Service.find({ provider: req.user._id });
     res.status(200).json(services);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 };
+
 const getProviderServices = async (req, res) => {
   try {
     const services = await Service.find({
@@ -32,9 +39,13 @@ const getProviderServices = async (req, res) => {
     });
     res.status(200).json(services);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 };
+
 const updateService = async (req, res) => {
   try {
     const service = await Service.findById(req.params.id);
@@ -56,9 +67,13 @@ const updateService = async (req, res) => {
     const updatedService = await service.save();
     res.status(200).json(updatedService);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 };
+
 const deleteService = async (req, res) => {
   try {
     const service = await Service.findById(req.params.id);
@@ -73,9 +88,13 @@ const deleteService = async (req, res) => {
     await service.deleteOne();
     res.status(200).json({ message: "Service deleted" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 };
+
 module.exports = {
   createService,
   getMyServices,

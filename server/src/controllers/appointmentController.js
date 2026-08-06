@@ -1,6 +1,6 @@
 const getAvailableSlots = require("../utils/slotGenerator");
-const Service = require("../models/Service");
 const Appointment = require("../models/Appointment");
+const Service = require("../models/Service");
 
 const getSlots = async (req, res) => {
   try {
@@ -8,21 +8,32 @@ const getSlots = async (req, res) => {
     const slots = await getAvailableSlots(providerId, serviceId, date);
     res.status(200).json(slots);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 };
 
 const createAppointment = async (req, res) => {
   try {
     const { providerId, serviceId, date, startTime } = req.body;
+
+    const service = await Service.findById(serviceId);
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+
     const availableSlots = await getAvailableSlots(providerId, serviceId, date);
-    const slotIsValid = availableSlots.some(
+    const slotStillAvailable = availableSlots.some(
       (slot) => slot.startTime === startTime,
     );
-    if (!slotIsValid) {
-      return res.status(400).json({ message: "This slot is not available" });
+    if (!slotStillAvailable) {
+      return res
+        .status(400)
+        .json({ message: "This slot is no longer available" });
     }
-    const service = await Service.findById(serviceId);
+
     const timeToMinutes = (time) => {
       const [hours, minutes] = time.split(":").map(Number);
       return hours * 60 + minutes;
@@ -41,10 +52,15 @@ const createAppointment = async (req, res) => {
       date,
       startTime,
       endTime,
+      status: "pending",
     });
+
     res.status(201).json(appointment);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 };
 
@@ -54,21 +70,28 @@ const getMyAppointments = async (req, res) => {
       req.user.role === "provider"
         ? { provider: req.user._id }
         : { customer: req.user._id };
+
     const appointments = await Appointment.find(filter)
       .populate("service", "name duration price")
       .populate("customer", "name email")
       .populate("provider", "name email");
+
     res.status(200).json(appointments);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 };
+
 const cancelAppointment = async (req, res) => {
   try {
     const appointment = await Appointment.findById(req.params.id);
     if (!appointment) {
       return res.status(404).json({ message: "Appointment not found" });
     }
+
     const isCustomer =
       appointment.customer.toString() === req.user._id.toString();
     const isProvider =
@@ -78,19 +101,31 @@ const cancelAppointment = async (req, res) => {
         .status(403)
         .json({ message: "Not authorized to cancel this appointment" });
     }
+
     if (
       appointment.status === "cancelled" ||
       appointment.status === "completed"
     ) {
       return res
         .status(400)
-        .json({ message: `Appointment is already ${appointment.status}` });
+        .json({ message: `Cannot cancel a ${appointment.status} appointment` });
     }
+
     appointment.status = "cancelled";
     await appointment.save();
-    res.status(200).json({ message: "Appointment cancelled", appointment });
+
+    res.status(200).json({ message: "Appointment cancelled" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 };
-module.exports = { getSlots, createAppointment, getMyAppointments,cancelAppointment };
+
+module.exports = {
+  getSlots,
+  createAppointment,
+  getMyAppointments,
+  cancelAppointment,
+};
