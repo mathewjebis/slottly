@@ -13,22 +13,31 @@ const Navbar = () => {
   return (
     <nav className="bg-slate-900 border-b border-slate-800 px-6 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link to="/dashboard">
+        <Link
+          to="/dashboard"
+          className="focus:outline-none focus:ring-2 focus:ring-slate-700 rounded"
+        >
           <Logo size="sm" />
         </Link>
 
         <div className="flex items-center gap-6">
-          <span className="text-slate-400 text-sm">
-            {user?.role === "provider"
-              ? "Provider"
-              : user?.role === "admin"
-                ? "Admin"
-                : "Customer"}
-          </span>
-          <span className="text-white text-sm font-medium">{user?.name}</span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700 font-medium tracking-wide">
+              {user?.role === "provider"
+                ? "Provider"
+                : user?.role === "admin"
+                  ? "Admin"
+                  : "Customer"}
+            </span>
+            <span className="text-white text-sm font-medium capitalize">
+              {user?.name.toLowerCase()}
+            </span>
+          </div>
+
+          <div className="h-4 w-px bg-slate-800" aria-hidden="true"></div>
           <button
             onClick={handleLogout}
-            className="text-slate-400 hover:text-white text-sm transition"
+            className="text-slate-400 hover:text-white text-sm transition hover:bg-slate-800 px-3 py-1.5 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-700"
           >
             Logout
           </button>

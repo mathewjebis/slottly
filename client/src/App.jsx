@@ -25,7 +25,7 @@ const App = () => {
         path="/dashboard"
         element={
           <PrivateRoute>
-            <div>Dashboard</div>
+            <Navbar />
           </PrivateRoute>
         }
       />
