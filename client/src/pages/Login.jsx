@@ -56,7 +56,7 @@ const Login = () => {
           <input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => (setEmail(e.target.value), setError(null))}
             className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
             placeholder="you@example.com"
           />
@@ -78,7 +78,7 @@ const Login = () => {
           <input
             type={showPassword ? "text" : "password"}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => (setPassword(e.target.value), setError(null))}
             className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
             placeholder="••••••••"
           />

@@ -29,6 +29,7 @@ const Dashboard = () => {
     };
     fetchAppointments();
   }, []);
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -36,6 +37,7 @@ const Dashboard = () => {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <h1 className="text-2xl font-bold text-white mb-1">
@@ -44,14 +46,15 @@ const Dashboard = () => {
       <p className="text-slate-400 mb-8">
         {user?.role === "provider"
           ? "Here's what's happening with your business today."
-          : "Here's a look at your upcoming apppointments"}
+          : "Here's a look at your upcoming appointments"}
       </p>
+
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         {user?.role === "provider" ? (
           <>
             <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
               <p className="text-slate-400 text-sm mb-1">
-                Upcomming Appointments
+                Upcoming Appointments
               </p>
               <p className="text-3xl font-bold text-white">{upcoming}</p>
             </div>
@@ -85,6 +88,7 @@ const Dashboard = () => {
           </>
         )}
       </div>
+
       <div className="mb-8">
         <h2 className="text-lg font-semibold text-white mb-4">Quick Actions</h2>
         <div className="flex flex-wrap gap-3">
@@ -119,7 +123,57 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+
+      <div>
+        <h2 className="text-lg font-semibold text-white mb-4">
+          {user?.role === "provider"
+            ? "Recent Appointments"
+            : "Your Appointments"}
+        </h2>
+        {appointments.length === 0 ? (
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
+            <p className="text-slate-400 text-sm">No appointments yet</p>
+          </div>
+        ) : (
+          <div className="bg-slate-900 border border-slate-800 rounded-xl divide-y divide-slate-800">
+            {appointments.slice(0, 5).map((appt) => (
+              <div
+                key={appt._id}
+                className="p-4 flex items-center justify-between"
+              >
+                <div>
+                  <p className="text-white text-sm font-medium">
+                    {appt.service?.name}
+                  </p>
+                  <p className="text-slate-400 text-xs mt-1">
+                    {user?.role === "provider"
+                      ? appt.customer?.name
+                      : appt.provider?.name}
+                    {" · "}
+                    {new Date(appt.date).toLocaleDateString()} at{" "}
+                    {appt.startTime}
+                  </p>
+                </div>
+                <span
+                  className={`text-xs font-medium px-2.5 py-1 rounded-full ${
+                    appt.status === "confirmed"
+                      ? "bg-green-500/10 text-green-400"
+                      : appt.status === "pending"
+                        ? "bg-yellow-500/10 text-yellow-400"
+                        : appt.status === "cancelled"
+                          ? "bg-red-500/10 text-red-400"
+                          : "bg-slate-700/50 text-slate-400"
+                  }`}
+                >
+                  {appt.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </DashboardLayout>
   );
 };
+
 export default Dashboard;

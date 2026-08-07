@@ -6,7 +6,7 @@ const AuthLayout = ({ children }) => {
       <div className="relative z-10 w-full max-w-5xl flex rounded-2xl overflow-hidden shadow-2xl">
         <div className="hidden lg:flex flex-col   w-[45%] bg-indigo-950/80 border border-indigo-500/30 backdrop-blur-sm p-10">
           <div>
-            <h2 className="text-2xl font-bold text-white mb-10 leading-tight ">
+            <h2 className="text-2xl font-bold text-white mb-6 leading-tight ">
               Book smarter.
               <br />
               Manage better.
