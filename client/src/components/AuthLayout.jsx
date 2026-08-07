@@ -17,12 +17,12 @@ const AuthLayout = ({ children }) => {
             </p>
             <div className="space-y-4  mb-5">
               {[
-                { icon: "⚡", text: "Real-time slot generation" },
-                { icon: "🔒", text: "Your data stays private" },
-                { icon: "📅", text: "Smart scheduling" },
+                { icon: "✦", text: "Real-time slot generation" },
+                { icon: "◆", text: "Your data stays private" },
+                { icon: "■ ", text: "Smart scheduling" },
               ].map((item) => (
                 <div key={item.text} className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-sm">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-lg font-bold text-indigo-400">
                     {item.icon}
                   </div>
                   <span className="text-slate-300 text-sm">{item.text}</span>

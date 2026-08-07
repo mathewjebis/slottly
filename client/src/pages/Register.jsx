@@ -103,17 +103,18 @@ const Register = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2">
-            I am a
+          <label className="block text-sm font-medium text-slate-400 mb-2">
+            Account Type
           </label>
-          <div className="grid grid-cols-2 gap-3">
+
+          <div className="grid grid-cols-2 bg-slate-800/80 p-1 rounded-xl border border-slate-700/60">
             <button
               type="button"
               onClick={() => setRole("customer")}
-              className={`py-3 rounded-lg border text-sm font-medium transition ${
+              className={`py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                 role === "customer"
-                  ? "bg-indigo-600 border-indigo-600 text-white"
-                  : "bg-slate-800 border-slate-700 text-slate-400 hover:border-indigo-500"
+                  ? "bg-indigo-600 text-white shadow-sm"
+                  : "text-slate-400 hover:text-slate-200"
               }`}
             >
               Customer
@@ -121,10 +122,10 @@ const Register = () => {
             <button
               type="button"
               onClick={() => setRole("provider")}
-              className={`py-3 rounded-lg border text-sm font-medium transition ${
+              className={`py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                 role === "provider"
-                  ? "bg-indigo-600 border-indigo-600 text-white"
-                  : "bg-slate-800 border-slate-700 text-slate-400 hover:border-indigo-500"
+                  ? "bg-indigo-600 text-white shadow-sm"
+                  : "text-slate-400 hover:text-slate-200"
               }`}
             >
               Provider
