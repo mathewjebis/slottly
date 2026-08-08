@@ -42,6 +42,17 @@ const Settings = () => {
       setSubmitting(false);
     }
   };
+
+  const handleDeleteService = async (id) => {
+    if (!window.confirm("Delete this service?")) return;
+    try {
+      await api.delete(`/services/${id}`);
+      setServices(services.filter((s) => s._id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     const fetchServices = async () => {
       try {
@@ -126,7 +137,10 @@ const Settings = () => {
                     <button className="text-slate-400 hover:text-white text-sm transition">
                       Edit
                     </button>
-                    <button className="text-red-400 hover:text-red-300 text-sm transition">
+                    <button
+                      onClick={() => handleDeleteService(service._id)}
+                      className="text-red-400 hover:text-red-300 text-sm transition"
+                    >
                       Delete
                     </button>
                   </div>
