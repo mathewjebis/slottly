@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
+import Settings from "./pages/Settings";
 
 const PrivateRoute = ({ children }) => {
   const { user } = useAuth();
@@ -36,7 +37,7 @@ const App = () => {
         element={
           <PrivateRoute>
             <ProviderRoute>
-              <div>Settings</div>
+              <Settings />
             </ProviderRoute>
           </PrivateRoute>
         }
