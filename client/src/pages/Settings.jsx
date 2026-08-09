@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../components/DashboardLayout";
 import api from "../api/axios";
+import { useAuth } from "../context/AuthContext";
 
+const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const Settings = () => {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("services");
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,6 +18,14 @@ const Settings = () => {
   });
   const [formError, setFormError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [availability, setAvailability] = useState(
+    DAYS.reduce((acc, day) => {
+      acc[day] = { enabled: false, startTime: "09:00", endTime: "17:00" };
+      return acc;
+    }, {}),
+  );
+  const [availabilitySaving, setAvailabilitySaving] = useState(false);
+  const [availabilityMessage, setAvailabilityMessage] = useState(null);
 
   const handleFormChange = (e) => {
     setServiceForm({ ...serviceForm, [e.target.name]: e.target.value });
@@ -52,6 +63,18 @@ const Settings = () => {
       console.error(err);
     }
   };
+  const toggleDay = (day) => {
+    setAvailability({
+      ...availability,
+      [day]: { ...availability[day], enabled: !availability[day].enabled },
+    });
+  };
+  const updateDayTime = (day, field, value) => {
+    setAvailability({
+      ...availability,
+      [day]: { ...availability[day], [field]: value },
+    });
+  };
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -65,6 +88,27 @@ const Settings = () => {
       }
     };
     fetchServices();
+  }, []);
+  useEffect(() => {
+    const fetchAvailability = async () => {
+      try {
+        const res = await api.get(`/availability/${user._id}`);
+        const merged = { ...availability };
+        res.data.weeklySchedule.forEach((entry) => {
+          merged[entry.day] = {
+            enabled: true,
+            startTime: entry.startTime,
+            endTime: entry.endTime,
+          };
+        });
+        setAvailability(merged);
+      } catch (err) {
+        if (err.response?.status != 404) {
+          console.error(err);
+        }
+      }
+    };
+    fetchAvailability();
   }, []);
   const tabs = [
     { id: "services", label: "Services" },
@@ -85,12 +129,12 @@ const Settings = () => {
       <p className="text-slate-400 mb-8">
         Manage your services, availability, and time off
       </p>
-      <div className="flex gap-2 border-b border-slate-800 mb-8">
+      <div className="flex gap-6 border-b border-slate-800 mb-8">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition ${
+            className={`whitespace-nowrap px-2 pr-1 md:px-5 py-2.5 text-sm font-medium border-b-2 transition ${
               activeTab === tab.id
                 ? "border-indigo-500 text-white"
                 : "border-transparent text-slate-400 hover:text-white"
@@ -119,27 +163,54 @@ const Settings = () => {
               </p>
             </div>
           ) : (
-            <div className="bg-slate-900 border border-slate-800 rounded-xl divide-y divide-slate-800">
+            <div className="space-y-3 md:space-y-0 md:bg-slate-900 md:border md:border-slate-800 md:rounded-xl md:divide-y md:divide-slate-800 md:overflow-hidden">
+              <div className="hidden md:grid px-4 py-3 bg-slate-950/30 grid-cols-[3fr_1.5fr_1.5fr_1fr] gap-3 items-center">
+                <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-wider">
+                  Service Name
+                </span>
+                <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-wider">
+                  Duration
+                </span>
+                <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-wider">
+                  Price
+                </span>
+                <span></span>
+              </div>
+
               {services.map((service) => (
                 <div
                   key={service._id}
-                  className="p-4 flex items-center justify-between"
+                  className="bg-slate-900 border border-slate-800 rounded-xl p-4 md:bg-transparent md:border-0 md:rounded-none md:px-4 md:py-3 flex flex-col md:grid md:grid-cols-[3fr_1.5fr_1.5fr_1fr] gap-4 md:gap-3 max-md:items-start md:items-center transition-all duration-200 hover:bg-slate-800/30"
                 >
-                  <div>
-                    <p className="text-white text-sm font-medium">
+                  <div className="flex justify-between items-center w-full md:block">
+                    <p className="text-white text-sm font-medium capitalize">
                       {service.name}
                     </p>
-                    <p className="text-slate-400 text-xs mt-1">
-                      {service.duration} min · ₹{service.price}
+                    <p className="text-emerald-400 text-sm font-semibold tracking-wide md:hidden">
+                      ₹{service.price}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button className="text-slate-400 hover:text-white text-sm transition">
+
+                  <div className="flex justify-start">
+                    <span className="inline-block bg-slate-800/60 border border-slate-700/50 text-slate-400 text-xs px-2.5 py-1 rounded-md font-medium ">
+                      {service.duration} min
+                    </span>
+                  </div>
+
+                  <div className="hidden md:block">
+                    <p className="text-emerald-400 text-sm font-semibold tracking-wide ">
+                      ₹{service.price}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center  w-full md:w-auto mt-4 md:mt-0 border-t border-slate-800/60 pt-3 md:border-none md:pt-0 gap-3">
+                    <button className="flex-1 md:flex-none text-center justify-center text-slate-400 hover:text-indigo-300 hover:bg-indigo-950/40 bg-slate-800/40 md:bg-transparent hover:border-indigo-900/50 border border-slate-800 md:border-transparent px-3 py-2 md:px-2.5 md:py-1 rounded-lg md:rounded-md text-sm font-medium transition-all duration-200 cursor-pointer">
                       Edit
                     </button>
+
                     <button
                       onClick={() => handleDeleteService(service._id)}
-                      className="text-red-400 hover:text-red-300 text-sm transition"
+                      className="flex-1 md:flex-none text-center justify-center text-slate-400 hover:text-red-300 hover:bg-red-950/50 bg-slate-800/40 md:bg-transparent hover:border-red-900/60 border border-slate-800 md:border-transparent px-3 py-2 md:px-2.5 md:py-1 rounded-lg md:rounded-md text-sm font-medium transition-all duration-200 cursor-pointer"
                     >
                       Delete
                     </button>
@@ -196,7 +267,7 @@ const Settings = () => {
                     name="duration"
                     value={serviceForm.duration}
                     onChange={handleFormChange}
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
+                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="30"
                   />
                 </div>
@@ -209,8 +280,8 @@ const Settings = () => {
                     name="price"
                     value={serviceForm.price}
                     onChange={handleFormChange}
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
-                    placeholder="300"
+                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    placeholder="0"
                   />
                 </div>
               </div>
