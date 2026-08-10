@@ -4,6 +4,7 @@ import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
 const Settings = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("services");
@@ -30,6 +31,7 @@ const Settings = () => {
   const handleFormChange = (e) => {
     setServiceForm({ ...serviceForm, [e.target.name]: e.target.value });
   };
+
   const handleAddService = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -63,17 +65,42 @@ const Settings = () => {
       console.error(err);
     }
   };
+
   const toggleDay = (day) => {
     setAvailability({
       ...availability,
       [day]: { ...availability[day], enabled: !availability[day].enabled },
     });
   };
+
   const updateDayTime = (day, field, value) => {
     setAvailability({
       ...availability,
       [day]: { ...availability[day], [field]: value },
     });
+  };
+
+  const handleSaveAvailability = async () => {
+    setAvailabilitySaving(true);
+    setAvailabilityMessage(null);
+    try {
+      const weeklySchedule = DAYS.filter(
+        (day) => availability[day].enabled,
+      ).map((day) => ({
+        day,
+        startTime: availability[day].startTime,
+        endTime: availability[day].endTime,
+      }));
+      await api.put("/availability", { weeklySchedule });
+      setAvailabilityMessage("Availability saved");
+    } catch (err) {
+      const data = err.response?.data;
+      setAvailabilityMessage(
+        data?.errors?.[0]?.msg || data?.message || "Something went wrong",
+      );
+    } finally {
+      setAvailabilitySaving(false);
+    }
   };
 
   useEffect(() => {
@@ -89,6 +116,7 @@ const Settings = () => {
     };
     fetchServices();
   }, []);
+
   useEffect(() => {
     const fetchAvailability = async () => {
       try {
@@ -110,6 +138,7 @@ const Settings = () => {
     };
     fetchAvailability();
   }, []);
+
   const tabs = [
     { id: "services", label: "Services" },
     { id: "availability", label: "Availability" },
@@ -123,12 +152,14 @@ const Settings = () => {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <h1 className="text-2xl font-bold text-white mb-1">Settings</h1>
       <p className="text-slate-400 mb-8">
         Manage your services, availability, and time off
       </p>
+
       <div className="flex gap-6 border-b border-slate-800 mb-8">
         {tabs.map((tab) => (
           <button
@@ -144,6 +175,7 @@ const Settings = () => {
           </button>
         ))}
       </div>
+
       {activeTab === "services" && (
         <div>
           <div className="flex items-center justify-between mb-4">
@@ -203,7 +235,7 @@ const Settings = () => {
                     </p>
                   </div>
 
-                  <div className="flex items-center  w-full md:w-auto mt-4 md:mt-0 border-t border-slate-800/60 pt-3 md:border-none md:pt-0 gap-3">
+                  <div className="flex items-center w-full md:w-auto mt-4 md:mt-0 border-t border-slate-800/60 pt-3 md:border-none md:pt-0 gap-3">
                     <button className="flex-1 md:flex-none text-center justify-center text-slate-400 hover:text-indigo-300 hover:bg-indigo-950/40 bg-slate-800/40 md:bg-transparent hover:border-indigo-900/50 border border-slate-800 md:border-transparent px-3 py-2 md:px-2.5 md:py-1 rounded-lg md:rounded-md text-sm font-medium transition-all duration-200 cursor-pointer">
                       Edit
                     </button>
@@ -221,6 +253,7 @@ const Settings = () => {
           )}
         </div>
       )}
+
       {showServiceForm && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
           <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-6">
@@ -311,4 +344,5 @@ const Settings = () => {
     </DashboardLayout>
   );
 };
+
 export default Settings;
