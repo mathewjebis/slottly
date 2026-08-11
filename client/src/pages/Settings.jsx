@@ -253,6 +253,74 @@ const Settings = () => {
           )}
         </div>
       )}
+      {activeTab === "availability" && (
+        <div>
+          <div className="flex items-center justify-between mb-4 gap-3">
+            <h2 className="  md:text-lg font-bold text-white whitespace-nowrap">
+              Weekly Availability
+            </h2>
+
+            <button
+              onClick={handleSaveAvailability}
+              disabled={availabilitySaving}
+              className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-medium px-2 py-2 md:px-4 md:py-2 rounded-lg transition whitespace-nowrap"
+            >
+              {availabilitySaving ? "Saving..." : "Save Changes"}
+            </button>
+          </div>
+          {availabilityMessage && (
+            <div className="bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 px-4 py-3 rounded-lg mb-4 text-sm">
+              {availabilityMessage}
+            </div>
+          )}
+          <div className="bg-slate-900 border border-slate-800 rounded-xl divide-y divide-slate-800 overflow-hidden ">
+            {DAYS.map((day) => (
+              <div
+                key={day}
+                className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6 px-3  py-4"
+              >
+                <div className="flex items-center gap-3 md:w-32">
+                  <button
+                    type="button"
+                    onClick={() => toggleDay(day)}
+                    className={`relative w-10 h-6 rounded-full transition ${availability[day].enabled ? "bg-indigo-600" : "bg-slate-700"}`}
+                  >
+                    <span
+                      className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+                        availability[day].enabled ? "translate-x-4" : ""
+                      }`}
+                    />
+                  </button>
+                  <span className="text-white text-sm font-medium"> {day}</span>
+                </div>
+                {availability[day].enabled ? (
+                  <div className="flex items-center gap-3  ">
+                    <input
+                      type="time"
+                      value={availability[day].startTime}
+                      onChange={(e) =>
+                        updateDayTime(day, "startTime", e.target.value)
+                      }
+                      className="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-indigo-500 transition"
+                    />
+                    <span className="text-slate-500 text-sm">to</span>
+                    <input
+                      type="time"
+                      value={availability[day].endTime}
+                      onChange={(e) =>
+                        updateDayTime(day, "endTime", e.target.value)
+                      }
+                      className="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-indigo-500 transition"
+                    />
+                  </div>
+                ) : (
+                  <span className="text-slate-500 text-sm  ">Unavailable</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {showServiceForm && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
