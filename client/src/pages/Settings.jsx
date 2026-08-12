@@ -148,267 +148,299 @@ const Settings = () => {
   if (loading) {
     return (
       <DashboardLayout>
-        <p className="text-slate-400">Loading...</p>
+        {/* >>> FIXED: Added wrapper to provide padding on mobile */}
+        <div className="w-full max-w-5xl mx-auto px-4 py-6">
+          <p className="text-slate-400">Loading...</p>
+        </div>
       </DashboardLayout>
     );
   }
 
   return (
     <DashboardLayout>
-      <h1 className="text-2xl font-bold text-white mb-1">Settings</h1>
-      <p className="text-slate-400 mb-8">
-        Manage your services, availability, and time off
-      </p>
-
-      <div className="flex gap-6 border-b border-slate-800 mb-8">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`whitespace-nowrap px-2 pr-1 md:px-5 py-2.5 text-sm font-medium border-b-2 transition ${
-              activeTab === tab.id
-                ? "border-indigo-500 text-white"
-                : "border-transparent text-slate-400 hover:text-white"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {activeTab === "services" && (
+      {/* >>> FIXED: Added this main wrapper div.
+          - max-w-5xl: Ensures content doesn't stretch too wide on large screens.
+          - mx-auto: Centers content.
+          - px-4 sm:px-6 lg:px-8: Provides proper padding at all screen sizes.
+          - flex flex-col: Forces stacking to prevent the "floating text" glitch seen in mobile.
+          - gap-6: Provides consistent spacing between sections. */}
+      <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-white">Your Services</h2>
+          <h1 className="text-2xl font-bold text-white mb-1">Settings</h1>
+          <p className="text-slate-400">
+            Manage your services, availability, and time off
+          </p>
+        </div>
+
+        {/* >>> FIXED: Added 'overflow-x-auto' so tabs scroll horizontally instead of breaking on tiny phones.
+            Added 'flex-wrap' to ensure they never squish or overlap. */}
+        <div className="flex gap-4 sm:gap-6 overflow-x-auto border-b border-slate-800 [&::-webkit-scrollbar]:hidden flex-wrap">
+          {tabs.map((tab) => (
             <button
-              onClick={() => setShowServiceForm(true)}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`whitespace-nowrap px-3 py-2.5 text-sm font-medium border-b-2 transition md:px-5 ${
+                activeTab === tab.id
+                  ? "border-indigo-500 text-white"
+                  : "border-transparent text-slate-400 hover:text-white"
+              }`}
             >
-              + Add Service
+              {tab.label}
             </button>
-          </div>
-          {services.length === 0 ? (
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
-              <p className="text-slate-400 text-sm">
-                No services yet. Add your first service to start accepting
-                bookings.
-              </p>
+          ))}
+        </div>
+
+        {activeTab === "services" && (
+          <div>
+            {/* >>> FIXED: Added 'flex-wrap gap-2' so the "+ Add Service" button drops to the next line
+                on extremely small screens instead of getting cut off. */}
+            <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
+              <h2 className="text-lg font-semibold text-white">
+                Your Services
+              </h2>
+              <button
+                onClick={() => setShowServiceForm(true)}
+                className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+              >
+                + Add Service
+              </button>
             </div>
-          ) : (
-            <div className="space-y-3 md:space-y-0 md:bg-slate-900 md:border md:border-slate-800 md:rounded-xl md:divide-y md:divide-slate-800 md:overflow-hidden">
-              <div className="hidden md:grid px-4 py-3 bg-slate-950/30 grid-cols-[3fr_1.5fr_1.5fr_1fr] gap-3 items-center">
-                <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-wider">
-                  Service Name
-                </span>
-                <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-wider">
-                  Duration
-                </span>
-                <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-wider">
-                  Price
-                </span>
-                <span></span>
+            {services.length === 0 ? (
+              <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
+                <p className="text-slate-400 text-sm">
+                  No services yet. Add your first service to start accepting
+                  bookings.
+                </p>
               </div>
+            ) : (
+              <div className="space-y-3 md:space-y-0 md:bg-slate-900 md:border md:border-slate-800 md:rounded-xl md:divide-y md:divide-slate-800 md:overflow-hidden">
+                {/* >>> FIXED: Changed 'md:grid' to 'lg:grid'.
+                    This prevents the table layout from activating at 768px (mid-size tablets)
+                    where the "Edit/Delete" buttons would wrap awkwardly. It stays card-like until 1024px. */}
+                <div className="hidden lg:grid px-4 py-3 bg-slate-950/30 grid-cols-[3fr_1.5fr_1.5fr_1fr] gap-3 items-center">
+                  <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-wider">
+                    Service Name
+                  </span>
+                  <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-wider">
+                    Duration
+                  </span>
+                  <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-wider">
+                    Price
+                  </span>
+                  <span></span>
+                </div>
 
-              {services.map((service) => (
-                <div
-                  key={service._id}
-                  className="bg-slate-900 border border-slate-800 rounded-xl p-4 md:bg-transparent md:border-0 md:rounded-none md:px-4 md:py-3 flex flex-col md:grid md:grid-cols-[3fr_1.5fr_1.5fr_1fr] gap-4 md:gap-3 max-md:items-start md:items-center transition-all duration-200 hover:bg-slate-800/30"
-                >
-                  <div className="flex justify-between items-center w-full md:block">
-                    <p className="text-white text-sm font-medium capitalize">
-                      {service.name}
-                    </p>
-                    <p className="text-emerald-400 text-sm font-semibold tracking-wide md:hidden">
-                      ₹{service.price}
-                    </p>
+                {services.map((service) => (
+                  // >>> FIXED (Mid-Screen): Replaced every single 'md:' class with 'lg:'.
+                  // This ensures the items stay in the stacked card layout on mid-screen sizes.
+                  <div
+                    key={service._id}
+                    className="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:bg-transparent lg:border-0 lg:rounded-none lg:px-4 lg:py-3 flex flex-col lg:grid lg:grid-cols-[3fr_1.5fr_1.5fr_1fr] gap-4 lg:gap-3 max-lg:items-start lg:items-center transition-all duration-200 hover:bg-slate-800/30"
+                  >
+                    <div className="flex justify-between items-center w-full lg:block">
+                      <p className="text-white text-sm font-medium capitalize">
+                        {service.name}
+                      </p>
+                      {/* >>> FIXED: Changed 'md:hidden' to 'lg:hidden'. */}
+                      <p className="text-emerald-400 text-sm font-semibold tracking-wide lg:hidden">
+                        ₹{service.price}
+                      </p>
+                    </div>
+
+                    <div className="flex justify-start">
+                      <span className="inline-block bg-slate-800/60 border border-slate-700/50 text-slate-400 text-xs px-2.5 py-1 rounded-md font-medium ">
+                        {service.duration} min
+                      </span>
+                    </div>
+
+                    {/* >>> FIXED: Changed 'hidden md:block' to 'hidden lg:block'. */}
+                    <div className="hidden lg:block">
+                      <p className="text-emerald-400 text-sm font-semibold tracking-wide ">
+                        ₹{service.price}
+                      </p>
+                    </div>
+
+                    {/* >>> FIXED: Changed 'md:w-auto', 'md:mt-0', 'md:border-none', 'md:pt-0' to 'lg:...' */}
+                    <div className="flex items-center w-full lg:w-auto mt-4 lg:mt-0 border-t border-slate-800/60 pt-3 lg:border-none lg:pt-0 gap-3">
+                      {/* >>> FIXED: Changed 'md:flex-none', 'md:bg-transparent', 'md:border-transparent' to 'lg:...' */}
+                      <button className="flex-1 lg:flex-none text-center justify-center text-slate-400 hover:text-indigo-300 hover:bg-indigo-950/40 bg-slate-800/40 lg:bg-transparent hover:border-indigo-900/50 border border-slate-800 lg:border-transparent px-3 py-2 lg:px-2.5 lg:py-1 rounded-lg lg:rounded-md text-sm font-medium transition-all duration-200 cursor-pointer">
+                        Edit
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteService(service._id)}
+                        className="flex-1 lg:flex-none text-center justify-center text-slate-400 hover:text-red-300 hover:bg-red-950/50 bg-slate-800/40 lg:bg-transparent hover:border-red-900/60 border border-slate-800 lg:border-transparent px-3 py-2 lg:px-2.5 lg:py-1 rounded-lg lg:rounded-md text-sm font-medium transition-all duration-200 cursor-pointer"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
-                  <div className="flex justify-start">
-                    <span className="inline-block bg-slate-800/60 border border-slate-700/50 text-slate-400 text-xs px-2.5 py-1 rounded-md font-medium ">
-                      {service.duration} min
+        {activeTab === "availability" && (
+          <div>
+            <div className="flex items-center justify-between mb-4 gap-3">
+              <h2 className="md:text-lg font-bold text-white whitespace-nowrap">
+                Weekly Availability
+              </h2>
+
+              <button
+                onClick={handleSaveAvailability}
+                disabled={availabilitySaving}
+                className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-medium px-2 py-2 md:px-4 md:py-2 rounded-lg transition whitespace-nowrap"
+              >
+                {availabilitySaving ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+            {availabilityMessage && (
+              <div className="bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 px-4 py-3 rounded-lg mb-4 text-sm">
+                {availabilityMessage}
+              </div>
+            )}
+            <div className="bg-slate-900 border border-slate-800 rounded-xl divide-y divide-slate-800 overflow-hidden ">
+              {DAYS.map((day) => (
+                <div
+                  key={day}
+                  className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6 px-3 py-4"
+                >
+                  <div className="flex items-center gap-3 md:w-32">
+                    <button
+                      type="button"
+                      onClick={() => toggleDay(day)}
+                      className={`relative w-10 h-6 rounded-full transition ${availability[day].enabled ? "bg-indigo-600" : "bg-slate-700"}`}
+                    >
+                      <span
+                        className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+                          availability[day].enabled ? "translate-x-4" : ""
+                        }`}
+                      />
+                    </button>
+                    <span className="text-white text-sm font-medium">
+                      {" "}
+                      {day}
                     </span>
                   </div>
-
-                  <div className="hidden md:block">
-                    <p className="text-emerald-400 text-sm font-semibold tracking-wide ">
-                      ₹{service.price}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center w-full md:w-auto mt-4 md:mt-0 border-t border-slate-800/60 pt-3 md:border-none md:pt-0 gap-3">
-                    <button className="flex-1 md:flex-none text-center justify-center text-slate-400 hover:text-indigo-300 hover:bg-indigo-950/40 bg-slate-800/40 md:bg-transparent hover:border-indigo-900/50 border border-slate-800 md:border-transparent px-3 py-2 md:px-2.5 md:py-1 rounded-lg md:rounded-md text-sm font-medium transition-all duration-200 cursor-pointer">
-                      Edit
-                    </button>
-
-                    <button
-                      onClick={() => handleDeleteService(service._id)}
-                      className="flex-1 md:flex-none text-center justify-center text-slate-400 hover:text-red-300 hover:bg-red-950/50 bg-slate-800/40 md:bg-transparent hover:border-red-900/60 border border-slate-800 md:border-transparent px-3 py-2 md:px-2.5 md:py-1 rounded-lg md:rounded-md text-sm font-medium transition-all duration-200 cursor-pointer"
-                    >
-                      Delete
-                    </button>
-                  </div>
+                  {availability[day].enabled ? (
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="time"
+                        value={availability[day].startTime}
+                        onChange={(e) =>
+                          updateDayTime(day, "startTime", e.target.value)
+                        }
+                        className="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-indigo-500 transition"
+                      />
+                      <span className="text-slate-500 text-sm">to</span>
+                      <input
+                        type="time"
+                        value={availability[day].endTime}
+                        onChange={(e) =>
+                          updateDayTime(day, "endTime", e.target.value)
+                        }
+                        className="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-indigo-500 transition"
+                      />
+                    </div>
+                  ) : (
+                    <span className="text-slate-500 text-sm">Unavailable</span>
+                  )}
                 </div>
               ))}
             </div>
-          )}
-        </div>
-      )}
-      {activeTab === "availability" && (
-        <div>
-          <div className="flex items-center justify-between mb-4 gap-3">
-            <h2 className="  md:text-lg font-bold text-white whitespace-nowrap">
-              Weekly Availability
-            </h2>
-
-            <button
-              onClick={handleSaveAvailability}
-              disabled={availabilitySaving}
-              className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-medium px-2 py-2 md:px-4 md:py-2 rounded-lg transition whitespace-nowrap"
-            >
-              {availabilitySaving ? "Saving..." : "Save Changes"}
-            </button>
           </div>
-          {availabilityMessage && (
-            <div className="bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 px-4 py-3 rounded-lg mb-4 text-sm">
-              {availabilityMessage}
-            </div>
-          )}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl divide-y divide-slate-800 overflow-hidden ">
-            {DAYS.map((day) => (
-              <div
-                key={day}
-                className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6 px-3  py-4"
-              >
-                <div className="flex items-center gap-3 md:w-32">
-                  <button
-                    type="button"
-                    onClick={() => toggleDay(day)}
-                    className={`relative w-10 h-6 rounded-full transition ${availability[day].enabled ? "bg-indigo-600" : "bg-slate-700"}`}
-                  >
-                    <span
-                      className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
-                        availability[day].enabled ? "translate-x-4" : ""
-                      }`}
-                    />
-                  </button>
-                  <span className="text-white text-sm font-medium"> {day}</span>
+        )}
+
+        {showServiceForm && (
+          <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+            <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-6">
+              <h3 className="text-lg font-bold text-white mb-4">Add Service</h3>
+              {formError && (
+                <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg mb-4 text-sm">
+                  {formError}
                 </div>
-                {availability[day].enabled ? (
-                  <div className="flex items-center gap-3  ">
+              )}
+              <form onSubmit={handleAddService} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Service Name
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={serviceForm.name}
+                    onChange={handleFormChange}
+                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
+                    placeholder="Haircut"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    value={serviceForm.description}
+                    onChange={handleFormChange}
+                    rows={2}
+                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition resize-none"
+                    placeholder="Classic haircut with wash"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Duration (min)
+                    </label>
                     <input
-                      type="time"
-                      value={availability[day].startTime}
-                      onChange={(e) =>
-                        updateDayTime(day, "startTime", e.target.value)
-                      }
-                      className="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-indigo-500 transition"
-                    />
-                    <span className="text-slate-500 text-sm">to</span>
-                    <input
-                      type="time"
-                      value={availability[day].endTime}
-                      onChange={(e) =>
-                        updateDayTime(day, "endTime", e.target.value)
-                      }
-                      className="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-indigo-500 transition"
+                      type="number"
+                      name="duration"
+                      value={serviceForm.duration}
+                      onChange={handleFormChange}
+                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      placeholder="30"
                     />
                   </div>
-                ) : (
-                  <span className="text-slate-500 text-sm  ">Unavailable</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {showServiceForm && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-6">
-            <h3 className="text-lg font-bold text-white mb-4">Add Service</h3>
-            {formError && (
-              <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg mb-4 text-sm">
-                {formError}
-              </div>
-            )}
-            <form onSubmit={handleAddService} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Service Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={serviceForm.name}
-                  onChange={handleFormChange}
-                  className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
-                  placeholder="Haircut"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Description
-                </label>
-                <textarea
-                  name="description"
-                  value={serviceForm.description}
-                  onChange={handleFormChange}
-                  rows={2}
-                  className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition resize-none"
-                  placeholder="Classic haircut with wash"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Duration (min)
-                  </label>
-                  <input
-                    type="number"
-                    name="duration"
-                    value={serviceForm.duration}
-                    onChange={handleFormChange}
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    placeholder="30"
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Price (₹)
+                    </label>
+                    <input
+                      type="number"
+                      name="price"
+                      value={serviceForm.price}
+                      onChange={handleFormChange}
+                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      placeholder="0"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Price (₹)
-                  </label>
-                  <input
-                    type="number"
-                    name="price"
-                    value={serviceForm.price}
-                    onChange={handleFormChange}
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    placeholder="0"
-                  />
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowServiceForm(false);
+                      setFormError(null);
+                    }}
+                    className="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-sm font-medium py-2.5 rounded-lg transition"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-medium py-2.5 rounded-lg transition"
+                  >
+                    {submitting ? "Adding..." : "Add Service"}
+                  </button>
                 </div>
-              </div>
-              <div className="flex gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowServiceForm(false);
-                    setFormError(null);
-                  }}
-                  className="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-sm font-medium py-2.5 rounded-lg transition"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-medium py-2.5 rounded-lg transition"
-                >
-                  {submitting ? "Adding..." : "Add Service"}
-                </button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </DashboardLayout>
   );
 };
