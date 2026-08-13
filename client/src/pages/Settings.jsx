@@ -4,7 +4,12 @@ import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
+const formatDuration = (minutes) => {
+  if (minutes < 60) return `${minutes} min`;
+  const hours = minutes / 60;
+  const display = hours % 1 === 0 ? hours : hours.toFixed(1);
+  return `${display} hr${hours === 1 ? "" : "s"}`;
+};
 const Settings = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("services");
@@ -14,7 +19,7 @@ const Settings = () => {
   const [serviceForm, setServiceForm] = useState({
     name: "",
     description: "",
-    duration: "",
+    durationHours: "",
     price: "",
   });
   const [formError, setFormError] = useState(null);
@@ -40,12 +45,17 @@ const Settings = () => {
       const res = await api.post("/services", {
         name: serviceForm.name,
         description: serviceForm.description,
-        duration: Number(serviceForm.duration),
+        duration: Math.round(Number(serviceForm.durationHours) * 60),
         price: Number(serviceForm.price),
       });
       setServices([...services, res.data]);
       setShowServiceForm(false);
-      setServiceForm({ name: "", description: "", duration: "", price: "" });
+      setServiceForm({
+        name: "",
+        description: "",
+        durationHours: "",
+        price: "",
+      });
     } catch (err) {
       const data = err.response?.data;
       setFormError(
@@ -148,7 +158,6 @@ const Settings = () => {
   if (loading) {
     return (
       <DashboardLayout>
-        {/* >>> FIXED: Added wrapper to provide padding on mobile */}
         <div className="w-full max-w-5xl mx-auto px-4 py-6">
           <p className="text-slate-400">Loading...</p>
         </div>
@@ -158,12 +167,6 @@ const Settings = () => {
 
   return (
     <DashboardLayout>
-      {/* >>> FIXED: Added this main wrapper div.
-          - max-w-5xl: Ensures content doesn't stretch too wide on large screens.
-          - mx-auto: Centers content.
-          - px-4 sm:px-6 lg:px-8: Provides proper padding at all screen sizes.
-          - flex flex-col: Forces stacking to prevent the "floating text" glitch seen in mobile.
-          - gap-6: Provides consistent spacing between sections. */}
       <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
         <div>
           <h1 className="text-2xl font-bold text-white mb-1">Settings</h1>
@@ -172,9 +175,7 @@ const Settings = () => {
           </p>
         </div>
 
-        {/* >>> FIXED: Added 'overflow-x-auto' so tabs scroll horizontally instead of breaking on tiny phones.
-            Added 'flex-wrap' to ensure they never squish or overlap. */}
-        <div className="flex gap-4 sm:gap-6 overflow-x-auto border-b border-slate-800 [&::-webkit-scrollbar]:hidden flex-wrap">
+        <div className="flex gap-4 sm:gap-6 overflow-x-auto border-b border-slate-800 [&::-webkit-scrollbar]:hidden">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -192,8 +193,6 @@ const Settings = () => {
 
         {activeTab === "services" && (
           <div>
-            {/* >>> FIXED: Added 'flex-wrap gap-2' so the "+ Add Service" button drops to the next line
-                on extremely small screens instead of getting cut off. */}
             <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
               <h2 className="text-lg font-semibold text-white">
                 Your Services
@@ -213,10 +212,7 @@ const Settings = () => {
                 </p>
               </div>
             ) : (
-              <div className="space-y-3 md:space-y-0 md:bg-slate-900 md:border md:border-slate-800 md:rounded-xl md:divide-y md:divide-slate-800 md:overflow-hidden">
-                {/* >>> FIXED: Changed 'md:grid' to 'lg:grid'.
-                    This prevents the table layout from activating at 768px (mid-size tablets)
-                    where the "Edit/Delete" buttons would wrap awkwardly. It stays card-like until 1024px. */}
+              <div className="space-y-3 lg:space-y-0 lg:bg-slate-900 lg:border lg:border-slate-800 lg:rounded-xl lg:divide-y lg:divide-slate-800 lg:overflow-hidden">
                 <div className="hidden lg:grid px-4 py-3 bg-slate-950/30 grid-cols-[3fr_1.5fr_1.5fr_1fr] gap-3 items-center">
                   <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-wider">
                     Service Name
@@ -231,8 +227,6 @@ const Settings = () => {
                 </div>
 
                 {services.map((service) => (
-                  // >>> FIXED (Mid-Screen): Replaced every single 'md:' class with 'lg:'.
-                  // This ensures the items stay in the stacked card layout on mid-screen sizes.
                   <div
                     key={service._id}
                     className="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:bg-transparent lg:border-0 lg:rounded-none lg:px-4 lg:py-3 flex flex-col lg:grid lg:grid-cols-[3fr_1.5fr_1.5fr_1fr] gap-4 lg:gap-3 max-lg:items-start lg:items-center transition-all duration-200 hover:bg-slate-800/30"
@@ -241,28 +235,25 @@ const Settings = () => {
                       <p className="text-white text-sm font-medium capitalize">
                         {service.name}
                       </p>
-                      {/* >>> FIXED: Changed 'md:hidden' to 'lg:hidden'. */}
+
                       <p className="text-emerald-400 text-sm font-semibold tracking-wide lg:hidden">
                         ₹{service.price}
                       </p>
                     </div>
 
                     <div className="flex justify-start">
-                      <span className="inline-block bg-slate-800/60 border border-slate-700/50 text-slate-400 text-xs px-2.5 py-1 rounded-md font-medium ">
-                        {service.duration} min
+                      <span className="inline-block bg-slate-800/60 border border-slate-700/50 text-slate-400 text-xs px-2.5 py-1 rounded-md font-medium">
+                        {formatDuration(service.duration)}
                       </span>
                     </div>
 
-                    {/* >>> FIXED: Changed 'hidden md:block' to 'hidden lg:block'. */}
                     <div className="hidden lg:block">
-                      <p className="text-emerald-400 text-sm font-semibold tracking-wide ">
+                      <p className="text-emerald-400 text-sm font-semibold tracking-wide">
                         ₹{service.price}
                       </p>
                     </div>
 
-                    {/* >>> FIXED: Changed 'md:w-auto', 'md:mt-0', 'md:border-none', 'md:pt-0' to 'lg:...' */}
                     <div className="flex items-center w-full lg:w-auto mt-4 lg:mt-0 border-t border-slate-800/60 pt-3 lg:border-none lg:pt-0 gap-3">
-                      {/* >>> FIXED: Changed 'md:flex-none', 'md:bg-transparent', 'md:border-transparent' to 'lg:...' */}
                       <button className="flex-1 lg:flex-none text-center justify-center text-slate-400 hover:text-indigo-300 hover:bg-indigo-950/40 bg-slate-800/40 lg:bg-transparent hover:border-indigo-900/50 border border-slate-800 lg:border-transparent px-3 py-2 lg:px-2.5 lg:py-1 rounded-lg lg:rounded-md text-sm font-medium transition-all duration-200 cursor-pointer">
                         Edit
                       </button>
@@ -283,7 +274,7 @@ const Settings = () => {
 
         {activeTab === "availability" && (
           <div>
-            <div className="flex items-center justify-between mb-4 gap-3">
+            <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
               <h2 className="md:text-lg font-bold text-white whitespace-nowrap">
                 Weekly Availability
               </h2>
@@ -301,7 +292,7 @@ const Settings = () => {
                 {availabilityMessage}
               </div>
             )}
-            <div className="bg-slate-900 border border-slate-800 rounded-xl divide-y divide-slate-800 overflow-hidden ">
+            <div className="bg-slate-900 border border-slate-800 rounded-xl divide-y divide-slate-800 overflow-hidden">
               {DAYS.map((day) => (
                 <div
                   key={day}
@@ -320,12 +311,11 @@ const Settings = () => {
                       />
                     </button>
                     <span className="text-white text-sm font-medium">
-                      {" "}
                       {day}
                     </span>
                   </div>
                   {availability[day].enabled ? (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center flex-wrap gap-2 md:gap-3">
                       <input
                         type="time"
                         value={availability[day].startTime}
@@ -392,15 +382,17 @@ const Settings = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-300 mb-2">
-                      Duration (min)
+                      Duration (hours)
                     </label>
                     <input
                       type="number"
-                      name="duration"
-                      value={serviceForm.duration}
+                      name="durationHours"
+                      step="0.5"
+                      min="0"
+                      value={serviceForm.durationHours}
                       onChange={handleFormChange}
-                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      placeholder="30"
+                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition "
+                      placeholder="e.g. 1.5"
                     />
                   </div>
                   <div>
