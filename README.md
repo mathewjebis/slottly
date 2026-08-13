@@ -1,176 +1,85 @@
 # Slottly
 
-A full-stack appointment booking platform built with the MERN stack. Providers manage their services, set weekly availability, and block time off. Customers browse providers, view real-time available slots, and book appointments — with instant conflict prevention.
-
-Built production-grade from scratch: HTTP-only cookie authentication (XSS-safe), role-based access control across three user roles, a custom slot-generation algorithm that prevents double-booking, email-based password reset, and clean separation between auth, authorization, and ownership checks at every route.
-
----
-
-## Live Demo
-
-> Coming soon — deploying to Netlify (frontend) + Render (backend)
-
----
-
-## Features
-
-**Authentication**
-- Register and login with hashed passwords (bcryptjs)
-- HTTP-only cookie sessions — token never exposed to JavaScript (XSS-safe)
-- CSRF protection via sameSite cookie flag
-- Email-based password reset — secure random token with 30-minute expiry, cleared after single use
-
-**Role-Based Access Control**
-- Three roles: `customer`, `provider`, `admin`
-- `protect` middleware verifies identity; `requireRole` middleware enforces role gates
-- Ownership checks inside controllers — a provider cannot touch another provider's data even with a valid token
-
-**Provider Capabilities**
-- Create, update, and delete services (name, description, duration, price)
-- Set weekly availability by day with custom start/end times
-- Block specific date ranges with time-off entries
-
-**Customer Capabilities**
-- Browse provider services
-- Query available slots for any provider + service + date combination
-- Book a slot — validated server-side before saving
-- Cancel their own appointments
-
-**Slot Generation Algorithm**
-- Duration-aware: steps through working hours in increments matching the service duration
-- Checks weekly schedule for the queried day
-- Blocks the entire day if a time-off entry covers that date
-- Overlap detection prevents double-booking
-- Returns only genuinely bookable `{ startTime, endTime }` pairs
-
-**Security**
-- HTTP-only cookies with secure + sameSite flags
-- Rate limiting — 100 requests/15min globally, 20/15min on auth routes
-- Input validation on every POST/PUT route (express-validator)
-- bcrypt password hashing (salt rounds: 10)
-
----
+A full-stack appointment booking platform built with the MERN stack — designed for service providers (salons, clinics, consultants, etc.) to manage their availability and services, with secure role-based access for Customers and Providers.
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | React + Tailwind CSS |
-| Backend | Node.js + Express 5 |
-| Database | MongoDB Atlas + Mongoose 9 |
-| Auth | JWT + bcryptjs + HTTP-only cookies |
-| Email | Nodemailer + Gmail |
-| Dev tooling | nodemon, Thunder Client |
+**Frontend:** React (Vite), Tailwind CSS, React Router, Axios
+**Backend:** Node.js, Express.js, MongoDB, Mongoose
+**Auth & Security:** JWT via HTTP-only cookies, bcrypt, express-validator, express-rate-limit
+**Email:** Nodemailer (Gmail)
 
----
+## Features
 
-## Project Structure
+### Authentication & Security
+- Register / Login / Logout with role selection (Customer / Provider)
+- HTTP-only cookie-based JWT auth — no token in localStorage, XSS-safe
+- Forgot/reset password via email — secure random token with 30-minute expiry
+- Role-based route protection plus ownership checks on every resource (a Provider can only edit their own data)
+- Rate limiting and input validation (express-validator) on every POST/PUT route
+- Passwords hashed with bcrypt
 
-```
-slottly/
-└── server/
-    ├── server.js
-    └── src/
-        ├── models/          — User, Service, Availability, TimeOff, Appointment
-        ├── controllers/     — auth, service, availability, timeOff, appointment
-        ├── routes/          — all route files
-        ├── middleware/      — authMiddleware, validationMiddleware
-        └── utils/           — slotGenerator, sendEmail
-```
+### Provider Dashboard
+- Full CRUD for services — name, description, duration, price
+- Weekly availability manager — toggle any day on/off, set a start/end time per day
+- Fully responsive, tested down to 320px screen width
 
----
+### Booking Engine (backend)
+- Custom slot-generation algorithm — computes real bookable time slots from a provider's weekly availability, time-off periods, and existing bookings
+- Duration-aware stepping with overlap detection to prevent double-booking
+- Full appointment CRUD (create, cancel, list) with role-based access
 
-## API Reference
-
-### Auth — `/api/auth`
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| POST | `/register` | None | Register a new user |
-| POST | `/login` | None | Login and set HTTP-only cookie |
-| POST | `/logout` | None | Clear the auth cookie |
-| GET | `/me` | Cookie | Get current user |
-| POST | `/forgot-password` | None | Send reset email |
-| POST | `/reset-password/:token` | None | Reset password |
-
-### Services — `/api/services`
-| Method | Endpoint | Role | Description |
-|---|---|---|---|
-| POST | `/` | provider | Create a service |
-| GET | `/my-services` | provider | Get own services |
-| PUT | `/:id` | provider | Update a service |
-| DELETE | `/:id` | provider | Delete a service |
-| GET | `/:providerId` | any | Get provider's services |
-
-### Availability — `/api/availability`
-| Method | Endpoint | Role | Description |
-|---|---|---|---|
-| PUT | `/` | provider | Set weekly schedule |
-| GET | `/:providerId` | any | Get availability |
-
-### Time Off — `/api/timeoff`
-| Method | Endpoint | Role | Description |
-|---|---|---|---|
-| POST | `/` | provider | Add time off |
-| GET | `/my-timeoff` | provider | Get own time off |
-| DELETE | `/:id` | provider | Delete time off |
-
-### Appointments — `/api/appointments`
-| Method | Endpoint | Role | Description |
-|---|---|---|---|
-| GET | `/available-slots` | any | Query available slots |
-| POST | `/` | customer | Book an appointment |
-| GET | `/my-appointments` | any | Get appointments |
-| PATCH | `/:id/cancel` | any | Cancel appointment |
-
----
+## In Progress
+- Time Off tab UI (backend complete, frontend pending)
+- Customer-facing booking flow (browse providers, view slots, book)
+- Admin panel
+- Deployment (Netlify + Render)
 
 ## Getting Started
 
+### Prerequisites
+- Node.js
+- MongoDB Atlas account
+- Gmail App Password (for password reset emails)
+
+### Installation
+
 ```bash
 git clone https://github.com/mathewjebis/slottly.git
-cd slottly/server
+cd slottly
+
+# Backend
+cd server
 npm install
-```
-
-Create `.env`:
-```
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret_key
-GMAIL_USER=your_gmail@gmail.com
-GMAIL_PASS=your_gmail_app_password
-CLIENT_URL=http://localhost:5173
-```
-
-```bash
+cp .env.example .env   # fill in your own values
 npm run dev
-```
 
----
+# Frontend (in a new terminal)
+cd ../client
+npm install
+npm run dev
 
-## Key Design Decisions
+Environment Variables (server/.env)
 
-**HTTP-only cookies over localStorage** — tokens stored in localStorage are vulnerable to XSS attacks. HTTP-only cookies are inaccessible to JavaScript entirely.
+PORT=5000
+JWT_SECRET=your_jwt_secret_key_here
+MONGO_URI=your_mongodb_connection_string
+GMAIL_USER=your_gmail_address
+GMAIL_PASS=your_16_character_app_password
+CLIENT_URL=http://localhost:5173
 
-**Single User model with role field** — one login system, one token flow, rather than three separate models.
-
-**Availability as a separate document with upsert** — each provider has exactly one Availability document, updated in place.
-
-**Three-layer security** — `protect` (token valid?) → `requireRole` (role permitted?) → ownership check (user owns this resource?). Each layer does exactly one job.
-
-**Slot algorithm steps by service duration** — a 45-minute service produces slots at 09:00, 09:45, 10:30 — not a fixed 30-minute grid.
-
----
-
-## Roadmap
-
-- [ ] React + Tailwind frontend
-- [ ] Admin panel
-- [ ] Demo login for recruiters
-- [ ] Deploy — Netlify + Render
-
----
-
-## Author
-
-**S. Mathew Jebis** — [github.com/mathewjebis](https://github.com/mathewjebis)
+Project Structure
+slottly/
+├── client/          # React frontend (Vite + Tailwind)
+│   └── src/
+│       ├── components/
+│       ├── context/
+│       ├── pages/
+│       └── api/
+└── server/           # Express backend
+    └── src/
+        ├── controllers/
+        ├── middleware/
+        ├── models/
+        ├── routes/
+        └── utils/
