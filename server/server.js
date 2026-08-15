@@ -9,7 +9,7 @@ const cookieParser = require("cookie-parser");
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 120,
   message: { message: "Too many requests, please try again later" },
 });
 

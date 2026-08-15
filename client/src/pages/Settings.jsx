@@ -10,6 +10,12 @@ const formatDuration = (minutes) => {
   const display = hours % 1 === 0 ? hours : hours.toFixed(1);
   return `${display} hr${hours === 1 ? "" : "s"}`;
 };
+const formatDate = (dateStr) =>
+  new Date(dateStr).toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 const Settings = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("services");
@@ -32,6 +38,16 @@ const Settings = () => {
   );
   const [availabilitySaving, setAvailabilitySaving] = useState(false);
   const [availabilityMessage, setAvailabilityMessage] = useState(null);
+
+  const [timeOff, setTimeOff] = useState([]);
+  const [showTimeOffForm, setShowTimeOffForm] = useState(false);
+  const [timeOffForm, setTimeOffForm] = useState({
+    startDate: "",
+    endDate: "",
+    reason: "",
+  });
+  const [timeOffSubmitting, setTimeOffSubmitting] = useState(false);
+  const [timeOffError, setTimeOffError] = useState(null);
 
   const handleFormChange = (e) => {
     setServiceForm({ ...serviceForm, [e.target.name]: e.target.value });
@@ -112,6 +128,41 @@ const Settings = () => {
       setAvailabilitySaving(false);
     }
   };
+  const handleTimeOffFormChange = (e) => {
+    setTimeOffForm({ ...timeOffForm, [e.target.name]: e.target.value });
+  };
+  const handleAddTimeOff = async (e) => {
+    e.preventDefault();
+    if (timeOffSubmitting) return;
+    setTimeOffSubmitting(true);
+    setTimeOffError(null);
+    try {
+      const res = await api.post("/timeoff", {
+        startDate: timeOffForm.startDate,
+        endDate: timeOffForm.endDate,
+        reason: timeOffForm.reason,
+      });
+      setTimeOff([...timeOff, res.data]);
+      setShowTimeOffForm(false);
+      setTimeOffForm({ startDate: "", endDate: "", reason: "" });
+    } catch (err) {
+      const data = err.response?.data;
+      setTimeOffError(
+        data?.errors?.[0]?.msg || data?.message || "Something went wrong",
+      );
+    } finally {
+      setTimeOffSubmitting(false);
+    }
+  };
+  const handleDeleteTimeOff = async (id) => {
+    if (!window.confirm("Remove this time off?")) return;
+    try {
+      await api.delete(`/timeoff/${id}`);
+      setTimeOff(timeOff.filter((t) => t._id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -147,6 +198,25 @@ const Settings = () => {
       }
     };
     fetchAvailability();
+  }, []);
+  useEffect(() => {
+    if (!availabilityMessage) return;
+    const timer = setTimeout(() => {
+      setAvailabilityMessage(null);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [availabilityMessage]);
+
+  useEffect(() => {
+    const fetchTimeOff = async () => {
+      try {
+        const res = await api.get("/timeoff/my-timeoff");
+        setTimeOff(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchTimeOff();
   }, []);
 
   const tabs = [
@@ -342,6 +412,55 @@ const Settings = () => {
             </div>
           </div>
         )}
+        {activeTab === "timeoff" && (
+          <div>
+            <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
+              <h2 className="text-lg font-semibold text-white">Time Off</h2>
+              <button
+                onClick={() => {
+                  setShowTimeOffForm(true);
+                  setTimeOffForm({ startDate: "", endDate: "", reason: "" });
+                }}
+                className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+              >
+                + Add Time Off
+              </button>
+            </div>
+
+            {timeOff.length === 0 ? (
+              <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
+                <p className="text-slate-400 text-sm">No time off scheduled.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {timeOff.map((entry) => (
+                  <div
+                    key={entry._id}
+                    className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center justify-between gap-3"
+                  >
+                    <div>
+                      <p className=" text-white text-sm font-medium">
+                        {formatDate(entry.startDate)} –{" "}
+                        {formatDate(entry.endDate)}
+                      </p>
+                      {entry.reason && (
+                        <p className="text-slate-400 text-xs mt-1">
+                          {entry.reason}
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => handleDeleteTimeOff(entry._id)}
+                      className="text-slate-400 hover:text-red-300 hover:bg-red-950/50 border border-slate-800 px-3 py-1.5 rounded-lg text-sm font-medium transition"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {showServiceForm && (
           <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
@@ -426,6 +545,87 @@ const Settings = () => {
                     className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-medium py-2.5 rounded-lg transition"
                   >
                     {submitting ? "Adding..." : "Add Service"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+        {showTimeOffForm && (
+          <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+            <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-6">
+              <h3 className="text-lg font-bold text-white mb-4">
+                Add Time Off
+              </h3>
+              {timeOffError && (
+                <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg mb-4 text-sm">
+                  {timeOffError}
+                </div>
+              )}
+              <form onSubmit={handleAddTimeOff} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Start Date
+                    </label>
+                    <input
+                      type="date"
+                      name="startDate"
+                      required
+                      value={timeOffForm.startDate}
+                      onChange={handleTimeOffFormChange}
+                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      End Date
+                    </label>
+                    <input
+                      type="date"
+                      name="endDate"
+                      required
+                      value={timeOffForm.endDate}
+                      onChange={handleTimeOffFormChange}
+                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Reason (optional)
+                  </label>
+                  <input
+                    type="text"
+                    name="reason"
+                    value={timeOffForm.reason}
+                    onChange={handleTimeOffFormChange}
+                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
+                    placeholder="e.g. Personal leave"
+                  />
+                </div>
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowTimeOffForm(false);
+                      setTimeOffError(null);
+                      setTimeOffForm({
+                        startDate: "",
+                        endDate: "",
+                        reason: "",
+                      });
+                    }}
+                    className="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-sm font-medium py-2.5 rounded-lg transition"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={timeOffSubmitting}
+                    className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-medium py-2.5 rounded-lg transition"
+                  >
+                    {timeOffSubmitting ? "Adding..." : "Add Time Off"}
                   </button>
                 </div>
               </form>

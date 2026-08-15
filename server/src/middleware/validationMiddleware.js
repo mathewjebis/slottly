@@ -40,7 +40,7 @@ const validateService = [
 
 const validateAvailability = [
   body("weeklySchedule")
-    .isArray({ min: 1 })
+    .isArray()
     .withMessage("Weekly schedule must be a non-empty array"),
   body("weeklySchedule.*.day")
     .isIn(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
