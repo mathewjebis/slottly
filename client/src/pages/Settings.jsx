@@ -433,30 +433,52 @@ const Settings = () => {
               </div>
             ) : (
               <div className="space-y-3">
-                {timeOff.map((entry) => (
-                  <div
-                    key={entry._id}
-                    className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center justify-between gap-3"
-                  >
-                    <div>
-                      <p className=" text-white text-sm font-medium">
-                        {formatDate(entry.startDate)} –{" "}
-                        {formatDate(entry.endDate)}
-                      </p>
-                      {entry.reason && (
-                        <p className="text-slate-400 text-xs mt-1">
-                          {entry.reason}
-                        </p>
-                      )}
-                    </div>
-                    <button
-                      onClick={() => handleDeleteTimeOff(entry._id)}
-                      className="text-slate-400 hover:text-red-300 hover:bg-red-950/50 border border-slate-800 px-3 py-1.5 rounded-lg text-sm font-medium transition"
+                {timeOff.map((entry) => {
+                  const isInvalidRange =
+                    new Date(entry.endDate) < new Date(entry.startDate);
+
+                  return (
+                    <div
+                      key={entry._id}
+                      className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center justify-between gap-3 flex-wrap"
                     >
-                      Delete
-                    </button>
-                  </div>
-                ))}
+                      <div>
+                        <div className="flex items-center gap-2 font-mono text-sm tracking-wide flex-wrap">
+                          <span className="rounded bg-slate-800/80 px-2 py-1 text-slate-300 shadow-inner border border-slate-700/30 whitespace-nowrap">
+                            {formatDate(entry.startDate)}
+                          </span>
+
+                          <span className="text-xs text-slate-500 font-sans mx-0.5">
+                            →
+                          </span>
+
+                          <span
+                            className={`rounded px-2 py-1 border transition-colors whitespace-nowrap ${
+                              isInvalidRange
+                                ? "bg-rose-950/30 border-rose-500/30 text-rose-300 line-through"
+                                : "bg-indigo-950/30 border-indigo-500/20 text-indigo-300"
+                            }`}
+                          >
+                            {formatDate(entry.endDate)}
+                          </span>
+                        </div>
+
+                        {entry.reason && (
+                          <p className="text-slate-400 text-xs mt-2 pl-1">
+                            {entry.reason}
+                          </p>
+                        )}
+                      </div>
+
+                      <button
+                        onClick={() => handleDeleteTimeOff(entry._id)}
+                        className="text-slate-400 hover:text-red-300 hover:bg-red-950/50 border border-slate-800 px-3 py-1.5 rounded-lg text-sm font-medium transition"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
