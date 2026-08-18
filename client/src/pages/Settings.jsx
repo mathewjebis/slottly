@@ -394,7 +394,7 @@ const Settings = () => {
                         }
                         className="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-indigo-500 transition"
                       />
-                      <span className="text-slate-500 text-sm">to</span>
+                      <span className="text-slate-500 text-sm"> →</span>
                       <input
                         type="time"
                         value={availability[day].endTime}
