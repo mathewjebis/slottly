@@ -237,7 +237,7 @@ const Settings = () => {
 
   return (
     <DashboardLayout>
-      <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+      <div className="w-full max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 py-4 flex flex-col gap-6">
         <div>
           <h1 className="text-2xl font-bold text-white mb-1">Settings</h1>
           <p className="text-slate-400">
@@ -345,7 +345,7 @@ const Settings = () => {
         {activeTab === "availability" && (
           <div>
             <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
-              <h2 className="md:text-lg font-bold text-white whitespace-nowrap">
+              <h2 className="text-lg font-semibold text-white whitespace-nowrap">
                 Weekly Availability
               </h2>
 
@@ -392,7 +392,7 @@ const Settings = () => {
                         onChange={(e) =>
                           updateDayTime(day, "startTime", e.target.value)
                         }
-                        className="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-indigo-500 transition"
+                        className="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg px-1 py-1 md:px-3 md:py-1.5 focus:outline-none focus:border-indigo-500 transition"
                       />
                       <span className="text-slate-500 text-sm"> →</span>
                       <input
@@ -401,7 +401,7 @@ const Settings = () => {
                         onChange={(e) =>
                           updateDayTime(day, "endTime", e.target.value)
                         }
-                        className="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-indigo-500 transition"
+                        className=" bg-slate-800 border border-slate-700  text-white text-sm rounded-lg py-1 px-1 md:px-3 md:py-1.5 focus:outline-none focus:border-indigo-500 transition"
                       />
                     </div>
                   ) : (
@@ -440,20 +440,20 @@ const Settings = () => {
                   return (
                     <div
                       key={entry._id}
-                      className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center justify-between gap-3 flex-wrap"
+                      className="bg-slate-900 border border-slate-800 rounded-xl p-6 pl-2 md:p-4 flex items-center justify-between gap-2 flex-wrap"
                     >
                       <div>
-                        <div className="flex items-center gap-2 font-mono text-sm tracking-wide flex-wrap">
-                          <span className="rounded bg-slate-800/80 px-2 py-1 text-slate-300 shadow-inner border border-slate-700/30 whitespace-nowrap">
+                        <div className="flex items-center gap-2 font-mono text-sm ">
+                          <span className="rounded bg-slate-800/80 md:px-2 md:py-2 px-1 py-1 text-slate-300 shadow-inner border border-slate-700/30 whitespace-nowrap">
                             {formatDate(entry.startDate)}
                           </span>
 
-                          <span className="text-xs text-slate-500 font-sans mx-0.5">
+                          <span className="text-xs text-slate-500 font-sans mx-0.4">
                             →
                           </span>
 
                           <span
-                            className={`rounded px-2 py-1 border transition-colors whitespace-nowrap ${
+                            className={`rounded md:px-2 md:py-2 px-1 py-1 border transition-colors whitespace-nowrap ${
                               isInvalidRange
                                 ? "bg-rose-950/30 border-rose-500/30 text-rose-300 line-through"
                                 : "bg-indigo-950/30 border-indigo-500/20 text-indigo-300"
