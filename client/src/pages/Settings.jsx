@@ -237,7 +237,7 @@ const Settings = () => {
 
   return (
     <DashboardLayout>
-      <div className="w-full max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 py-4 flex flex-col gap-6">
+      <div className="w-full max-w-5xl mx-auto px-0  lg:px-8 py-4 flex flex-col gap-6">
         <div>
           <h1 className="text-2xl font-bold text-white mb-1">Settings</h1>
           <p className="text-slate-400">
@@ -440,11 +440,11 @@ const Settings = () => {
                   return (
                     <div
                       key={entry._id}
-                      className="bg-slate-900 border border-slate-800 rounded-xl p-6 pl-2 md:p-4 flex items-center justify-between gap-2 flex-wrap"
+                      className="bg-slate-900 border border-slate-800 rounded-xl p-4  flex items-center justify-between gap-2 flex-wrap"
                     >
                       <div>
                         <div className="flex items-center gap-2 font-mono text-sm ">
-                          <span className="rounded bg-slate-800/80 md:px-2 md:py-2 px-1 py-1 text-slate-300 shadow-inner border border-slate-700/30 whitespace-nowrap">
+                          <span className="rounded bg-slate-800/80  px-1 py-1 md:px-2 md:py-2  text-slate-300 shadow-inner border border-slate-700/30 whitespace-nowrap">
                             {formatDate(entry.startDate)}
                           </span>
 
