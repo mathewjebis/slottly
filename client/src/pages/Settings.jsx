@@ -385,7 +385,7 @@ const Settings = () => {
                     </span>
                   </div>
                   {availability[day].enabled ? (
-                    <div className="flex items-center flex-wrap gap-2 md:gap-3">
+                    <div className="flex items-center  gap-2 md:gap-3">
                       <input
                         type="time"
                         value={availability[day].startTime}
