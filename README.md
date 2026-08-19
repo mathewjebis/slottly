@@ -49,37 +49,42 @@ A full-stack appointment booking platform built with the MERN stack — designed
 
 ### Installation
 
+```bash
 git clone https://github.com/mathewjebis/slottly.git
 cd slottly
 
-Backend
+# Backend
 cd server
 npm install
 cp .env.example .env   # fill in your own values
 npm run dev
 
-Frontend (in a new terminal)
+# Frontend (in a new terminal)
 cd ../client
 npm install
 npm run dev
+```
 
 ### Environment Variables
 
 **server/.env**
-
+```
 PORT=5000
 JWT_SECRET=your_jwt_secret_key_here
 MONGO_URI=your_mongodb_connection_string
 GMAIL_USER=your_sender_email@gmail.com
 BREVO_API_KEY=your_brevo_api_key
 CLIENT_URL=http://localhost:5173
+```
 
 **client/.env**
-
+```
 VITE_API_URL=http://localhost:5000/api
+```
 
 ## Project Structure
 
+```
 slottly/
 ├── client/          # React frontend (Vite + Tailwind)
 │   └── src/
@@ -94,3 +99,4 @@ slottly/
         ├── models/
         ├── routes/
         └── utils/
+```
