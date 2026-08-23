@@ -13,12 +13,6 @@ const limiter = rateLimit({
   message: { message: "Too many requests, please try again later" },
 });
 
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-  message: { message: "Too many login attempts, please try again later" },
-});
-
 const app = express();
 app.set("trust proxy", 1);
 app.use(express.json());
@@ -27,13 +21,12 @@ app.use(
   cors({
     origin: process.env.CLIENT_URL || "http://localhost:5173",
     credentials: true,
-    
   }),
 );
 app.use(morgan("dev"));
 app.use(limiter);
 
-app.use("/api/auth", authLimiter, require("./src/routes/authRoutes"));
+app.use("/api/auth", require("./src/routes/authRoutes"));
 app.use("/api/services", require("./src/routes/serviceRoutes"));
 app.use("/api/availability", require("./src/routes/availabilityRoutes"));
 app.use("/api/timeoff", require("./src/routes/timeOffRoutes"));
