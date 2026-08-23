@@ -4,9 +4,19 @@ import api from "../api/axios";
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user")) || null,
-  );
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchUser = async () => {
+    try {
+      const res = await api.get("/auth/me");
+      setUser(res.data);
+    } catch (err) {
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const login = (data) => {
     const userProfile = {
@@ -17,7 +27,6 @@ export const AuthProvider = ({ children }) => {
     };
 
     setUser(userProfile);
-    localStorage.setItem("user", JSON.stringify(userProfile));
   };
 
   const logout = async () => {
@@ -27,7 +36,6 @@ export const AuthProvider = ({ children }) => {
       console.error("Logout cookie clearance failed:", error);
     } finally {
       setUser(null);
-      localStorage.removeItem("user");
     }
   };
 
