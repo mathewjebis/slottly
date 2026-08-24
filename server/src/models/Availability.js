@@ -24,5 +24,5 @@ const availabilitySchema = new mongoose.Schema({
     },
   ],
 });
-
+availabilitySchema.index({provider:1},{unique:true})
 module.exports = mongoose.model("Availability", availabilitySchema);
