@@ -165,6 +165,7 @@ const Settings = () => {
   };
 
   useEffect(() => {
+    if(!user) return;
     const fetchServices = async () => {
       try {
         const res = await api.get("/services/my-services");
@@ -176,7 +177,7 @@ const Settings = () => {
       }
     };
     fetchServices();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if(!user) return;
