@@ -179,6 +179,7 @@ const Settings = () => {
   }, []);
 
   useEffect(() => {
+    if(!user) return;
     const fetchAvailability = async () => {
       try {
         const res = await api.get(`/availability/${user._id}`);
@@ -198,7 +199,7 @@ const Settings = () => {
       }
     };
     fetchAvailability();
-  }, []);
+  }, [user]);
   useEffect(() => {
     if (!availabilityMessage) return;
     const timer = setTimeout(() => {
@@ -208,6 +209,7 @@ const Settings = () => {
   }, [availabilityMessage]);
 
   useEffect(() => {
+    if(!user) return;
     const fetchTimeOff = async () => {
       try {
         const res = await api.get("/timeoff/my-timeoff");
@@ -217,7 +219,7 @@ const Settings = () => {
       }
     };
     fetchTimeOff();
-  }, []);
+  }, [user]);
 
   const tabs = [
     { id: "services", label: "Services" },
