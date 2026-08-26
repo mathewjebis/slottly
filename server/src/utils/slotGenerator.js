@@ -8,7 +8,7 @@ const getAvailableSlots = async (providerId, serviceId, dateString) => {
   if (!service) {
     throw new Error("Service not found");
   }
-  const date = new Date(dateString);
+  const date = new Date(dateString + "T00:00:00");
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const dayOfWeek = dayNames[date.getDay()];
 
@@ -23,11 +23,11 @@ const getAvailableSlots = async (providerId, serviceId, dateString) => {
   if (!daySchedule) {
     return [];
   }
-
+  const dateKey = dateString;
   const timeOff = await TimeOff.findOne({
     provider: providerId,
-    startDate: { $lte: date },
-    endDate: { $gte: date },
+    startDate: { $lte: dateKey },
+    endDate: { $gte: dateKey },
   });
   if (timeOff) {
     return [];

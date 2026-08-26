@@ -123,9 +123,65 @@ const cancelAppointment = async (req, res) => {
   }
 };
 
+const confirmAppointment = async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.params.id);
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+    if (appointment.provider.toString() !== req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ message: "Only the provider can confirm appointments" });
+    }
+    if (appointment.status !== "pending") {
+      return res
+        .status(400)
+        .json({ message: "Only pending appointments can be confirmed" });
+    }
+    appointment.status = "confirmed";
+    await appointment.save();
+
+    res.status(200).json(appointment);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
+  }
+};
+const completeAppointment = async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.params.id);
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+    if (appointment.provider.toString() !== req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ message: "Only the provider can complete appointments" });
+    }
+    if (appointment.status !== "confirmed") {
+      return res
+        .status(400)
+        .json({ message: "Only confirmed appointments can be completed" });
+    }
+    appointment.status = "completed";
+    await appointment.save();
+    res.status(200).json(appointment);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
+  }
+};
+
 module.exports = {
   getSlots,
   createAppointment,
   getMyAppointments,
   cancelAppointment,
+  confirmAppointment,
+  completeAppointment,
 };
