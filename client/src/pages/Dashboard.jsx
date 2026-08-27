@@ -52,38 +52,92 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         {user?.role === "provider" ? (
           <>
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-              <p className="text-slate-400 text-sm mb-1">
-                Upcoming Appointments
-              </p>
-              <p className="text-3xl font-bold text-white">{upcoming}</p>
+            <div className="group relative bg-linear-to-br from-indigo-500/10 via-slate-900 to-slate-900 border border-indigo-500/20 rounded-xl p-5 overflow-hidden transition-all duration-300 hover:border-indigo-500/40 hover:shadow-lg hover:shadow-indigo-500/10">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl group-hover:bg-indigo-500/10 transition-colors duration-300" />
+              <div className="relative flex items-start justify-between">
+                <div className="flex-1">
+                  <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Upcoming Appointments</p>
+                  <p className="text-4xl font-bold text-white mb-1">{upcoming}</p>
+                </div>
+                <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              </div>
             </div>
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-              <p className="text-slate-400 text-sm mb-1">
-                Pending Confirmation
-              </p>
-              <p className="text-3xl font-bold text-white">{pending}</p>
+            <div className="group relative bg-linear-to-br from-amber-500/10 via-slate-900 to-slate-900 border border-amber-500/20 rounded-xl p-5 overflow-hidden transition-all duration-300 hover:border-amber-500/40 hover:shadow-lg hover:shadow-amber-500/10">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-colors duration-300" />
+              <div className="relative flex items-start justify-between">
+                <div className="flex-1">
+                  <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Pending Confirmation</p>
+                  <p className="text-4xl font-bold text-white mb-1">{pending}</p>
+                </div>
+                <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
             </div>
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-              <p className="text-slate-400 text-sm mb-1">Completed</p>
-              <p className="text-3xl font-bold text-white">{completed}</p>
+            <div className="group relative bg-linear-to-br from-emerald-500/10 via-slate-900 to-slate-900 border border-emerald-500/20 rounded-xl p-5 overflow-hidden transition-all duration-300 hover:border-emerald-500/40 hover:shadow-lg hover:shadow-emerald-500/10">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors duration-300" />
+              <div className="relative flex items-start justify-between">
+                <div className="flex-1">
+                  <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Completed</p>
+                  <p className="text-4xl font-bold text-white mb-1">{completed}</p>
+                </div>
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
             </div>
           </>
         ) : (
           <>
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-              <p className="text-slate-400 text-sm mb-1">Upcoming Bookings</p>
-              <p className="text-3xl font-bold text-white">{upcoming}</p>
+            <div className="group relative bg-linear-to-br from-indigo-500/10 via-slate-900 to-slate-900 border border-indigo-500/20 rounded-xl p-5 overflow-hidden transition-all duration-300 hover:border-indigo-500/40 hover:shadow-lg hover:shadow-indigo-500/10">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl group-hover:bg-indigo-500/10 transition-colors duration-300" />
+              <div className="relative flex items-start justify-between">
+                <div className="flex-1">
+                  <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Upcoming Bookings</p>
+                  <p className="text-4xl font-bold text-white mb-1">{upcoming}</p>
+                </div>
+                <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              </div>
             </div>
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-              <p className="text-slate-400 text-sm mb-1">Total Bookings</p>
-              <p className="text-3xl font-bold text-white">
-                {appointments.length}
-              </p>
+            <div className="group relative bg-linear-to-br from-violet-500/10 via-slate-900 to-slate-900 border border-violet-500/20 rounded-xl p-5 overflow-hidden transition-all duration-300 hover:border-violet-500/40 hover:shadow-lg hover:shadow-violet-500/10">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/5 rounded-full blur-2xl group-hover:bg-violet-500/10 transition-colors duration-300" />
+              <div className="relative flex items-start justify-between">
+                <div className="flex-1">
+                  <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Total Bookings</p>
+                  <p className="text-4xl font-bold text-white mb-1">{appointments.length}</p>
+                </div>
+                <div className="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center border border-violet-500/20 group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-6 h-6 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </div>
+              </div>
             </div>
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-              <p className="text-slate-400 text-sm mb-1">Completed</p>
-              <p className="text-3xl font-bold text-white">{completed}</p>
+            <div className="group relative bg-linear-to-br from-emerald-500/10 via-slate-900 to-slate-900 border border-emerald-500/20 rounded-xl p-5 overflow-hidden transition-all duration-300 hover:border-emerald-500/40 hover:shadow-lg hover:shadow-emerald-500/10">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors duration-300" />
+              <div className="relative flex items-start justify-between">
+                <div className="flex-1">
+                  <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Completed</p>
+                  <p className="text-4xl font-bold text-white mb-1">{completed}</p>
+                </div>
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
             </div>
           </>
         )}

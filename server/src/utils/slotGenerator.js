@@ -2,6 +2,7 @@ const Availability = require("../models/Availability");
 const TimeOff = require("../models/TimeOff");
 const Appointment = require("../models/Appointment");
 const Service = require("../models/Service");
+const { timeToMinutes, minutesToTime } = require("./timeHelpers");
 
 const getAvailableSlots = async (providerId, serviceId, dateString) => {
   const service = await Service.findById(serviceId);
@@ -23,11 +24,11 @@ const getAvailableSlots = async (providerId, serviceId, dateString) => {
   if (!daySchedule) {
     return [];
   }
-  const dateKey = dateString;
+  
   const timeOff = await TimeOff.findOne({
     provider: providerId,
-    startDate: { $lte: dateKey },
-    endDate: { $gte: dateKey },
+    startDate: { $lte: date },
+    endDate: { $gte: date },
   });
   if (timeOff) {
     return [];
@@ -41,16 +42,6 @@ const getAvailableSlots = async (providerId, serviceId, dateString) => {
 
   const slots = [];
   const duration = service.duration;
-
-  const timeToMinutes = (time) => {
-    const [hours, minutes] = time.split(":").map(Number);
-    return hours * 60 + minutes;
-  };
-  const minutesToTime = (mins) => {
-    const hours = Math.floor(mins / 60);
-    const minutes = mins % 60;
-    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
-  };
 
   let currentTime = daySchedule.startTime;
   const endTime = daySchedule.endTime;

@@ -3,6 +3,9 @@ const TimeOff = require("../models/TimeOff");
 const addTimeOff = async (req, res) => {
   try {
     const { startDate, endDate, reason } = req.body;
+    if(new Date(endDate)<new Date(startDate)){
+      return res.status(400).json({message:"End date cannot be before start date"})
+    }
     const timeOff = await TimeOff.create({
       provider: req.user._id,
       startDate,

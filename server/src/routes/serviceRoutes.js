@@ -9,7 +9,7 @@ const {
   deleteService,
   getProviderServices,
 } = require("../controllers/serviceController");
-const { validateService } = require("../middleware/validationMiddleware");
+const { validateServiceUpdate,validateService } = require("../middleware/validationMiddleware");
 
 router.post(
   "/",
@@ -23,7 +23,7 @@ router.put(
   "/:id",
   protect,
   requireRole("provider"),
-  validateService,
+  validateServiceUpdate,
   updateService,
 );
 router.delete("/:id", protect, requireRole("provider"), deleteService);

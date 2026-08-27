@@ -1,6 +1,7 @@
 const getAvailableSlots = require("../utils/slotGenerator");
 const Appointment = require("../models/Appointment");
 const Service = require("../models/Service");
+const { timeToMinutes, minutesToTime } = require("../utils/timeHelpers");
 
 const getSlots = async (req, res) => {
   try {
@@ -34,15 +35,6 @@ const createAppointment = async (req, res) => {
         .json({ message: "This slot is no longer available" });
     }
 
-    const timeToMinutes = (time) => {
-      const [hours, minutes] = time.split(":").map(Number);
-      return hours * 60 + minutes;
-    };
-    const minutesToTime = (mins) => {
-      const hours = Math.floor(mins / 60);
-      const minutes = mins % 60;
-      return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
-    };
     const endTime = minutesToTime(timeToMinutes(startTime) + service.duration);
 
     const appointment = await Appointment.create({

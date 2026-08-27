@@ -27,16 +27,21 @@ const validateLogin = [
   validate,
 ];
 
+const validateServiceUpdate = [
+  body("name").optional().trim().notEmpty().withMessage("Service name cannot be empty"),
+  body("duration").optional().isInt({min:5}).withMessage("Duration must be at least 5 minutes"
+  ),
+  body("price").optional().isFloat({min:0}).withMessage("Price must be a positive number"),
+  body("isActive").optional().isBoolean().withMessage("isActive must be a boolean"),
+  validate
+]
+
 const validateService = [
   body("name").trim().notEmpty().withMessage("Service name is required"),
-  body("duration")
-    .isInt({ min: 5 })
-    .withMessage("Duration must be at least 5 minutes"),
-  body("price")
-    .isFloat({ min: 0 })
-    .withMessage("Price must be a positive number"),
+  body("duration").isInt({min:5}).withMessage("Duration must be at least 5 minutes"),
+  body("price").isFloat({min:0}).withMessage("Price must be positive number"),
   validate,
-];
+]
 
 const validateAvailability = [
   body("weeklySchedule")
@@ -83,6 +88,7 @@ const validateResetPassword = [
 module.exports = {
   validateRegister,
   validateLogin,
+  validateServiceUpdate,
   validateService,
   validateAvailability,
   validateTimeOff,
