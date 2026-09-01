@@ -1,0 +1,31 @@
+{
+  "name": "slottly",
+  "version": "1.0.0",
+  "description": "A full-stack appointment booking platform built with the MERN stack — designed for service providers (salons, clinics, consultants, etc.) to manage their availability and services, with secure role-based access for Customers and Providers.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mathewjebis/slottly.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mathewjebis/slottly/issues"
+  },
+  "homepage": "https://github.com/mathewjebis/slottly#readme",
+  "dependencies": {
+    "@vitejs/plugin-react": "^6.1.1",
+    "framer-motion": "^13.1.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.3",
+    "vite": "^8.2.2"
+  }
+}

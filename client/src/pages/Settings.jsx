@@ -255,7 +255,7 @@ const Settings = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`whitespace-nowrap px-3 py-2.5 text-sm font-medium border-b-2 transition md:px-5 ${
                 activeTab === tab.id
-                  ? "border-indigo-500 text-white"
+                  ? "border-emerald-500 text-white"
                   : "border-transparent text-slate-400 hover:text-white"
               }`}
             >
@@ -272,7 +272,7 @@ const Settings = () => {
               </h2>
               <button
                 onClick={() => setShowServiceForm(true)}
-                className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
               >
                 + Add Service
               </button>
@@ -327,7 +327,7 @@ const Settings = () => {
                     </div>
 
                     <div className="flex items-center w-full lg:w-auto mt-4 lg:mt-0 border-t border-slate-800/60 pt-3 lg:border-none lg:pt-0 gap-3">
-                      <button className="flex-1 lg:flex-none text-center justify-center text-slate-400 hover:text-indigo-300 hover:bg-indigo-950/40 bg-slate-800/40 lg:bg-transparent hover:border-indigo-900/50 border border-slate-800 lg:border-transparent px-3 py-2 lg:px-2.5 lg:py-1 rounded-lg lg:rounded-md text-sm font-medium transition-all duration-200 cursor-pointer">
+                      <button className="flex-1 lg:flex-none text-center justify-center text-slate-400 hover:text-emerald-300 hover:bg-emerald-950/40 bg-slate-800/40 lg:bg-transparent hover:border-emerald-900/50 border border-slate-800 lg:border-transparent px-3 py-2 lg:px-2.5 lg:py-1 rounded-lg lg:rounded-md text-sm font-medium transition-all duration-200 cursor-pointer">
                         Edit
                       </button>
 
@@ -355,13 +355,13 @@ const Settings = () => {
               <button
                 onClick={handleSaveAvailability}
                 disabled={availabilitySaving}
-                className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-medium px-2 py-2 md:px-4 md:py-2 rounded-lg transition whitespace-nowrap"
+                className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-sm font-medium px-2 py-2 md:px-4 md:py-2 rounded-lg transition whitespace-nowrap"
               >
                 {availabilitySaving ? "Saving..." : "Save Changes"}
               </button>
             </div>
             {availabilityMessage && (
-              <div className="bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 px-4 py-3 rounded-lg mb-4 text-sm">
+              <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 px-4 py-3 rounded-lg mb-4 text-sm">
                 {availabilityMessage}
               </div>
             )}
@@ -375,7 +375,7 @@ const Settings = () => {
                     <button
                       type="button"
                       onClick={() => toggleDay(day)}
-                      className={`relative w-10 h-6 rounded-full transition ${availability[day].enabled ? "bg-indigo-600" : "bg-slate-700"}`}
+                      className={`relative w-10 h-6 rounded-full transition ${availability[day].enabled ? "bg-emerald-600" : "bg-slate-700"}`}
                     >
                       <span
                         className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
@@ -395,7 +395,7 @@ const Settings = () => {
                         onChange={(e) =>
                           updateDayTime(day, "startTime", e.target.value)
                         }
-                        className="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg px-1 py-1 md:px-3 md:py-1.5 focus:outline-none focus:border-indigo-500 transition"
+                        className="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg px-1 py-1 md:px-3 md:py-1.5 focus:outline-none focus:border-emerald-500 transition"
                       />
                       <span className="text-slate-500 text-sm"> →</span>
                       <input
@@ -404,7 +404,7 @@ const Settings = () => {
                         onChange={(e) =>
                           updateDayTime(day, "endTime", e.target.value)
                         }
-                        className=" bg-slate-800 border border-slate-700  text-white text-sm rounded-lg py-1 px-1 md:px-3 md:py-1.5 focus:outline-none focus:border-indigo-500 transition"
+                        className=" bg-slate-800 border border-slate-700  text-white text-sm rounded-lg py-1 px-1 md:px-3 md:py-1.5 focus:outline-none focus:border-emerald-500 transition"
                       />
                     </div>
                   ) : (
@@ -424,7 +424,7 @@ const Settings = () => {
                   setShowTimeOffForm(true);
                   setTimeOffForm({ startDate: "", endDate: "", reason: "" });
                 }}
-                className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
               >
                 + Add Time Off
               </button>
@@ -459,7 +459,7 @@ const Settings = () => {
                             className={`rounded md:px-2 md:py-2 px-1 py-1 border transition-colors whitespace-nowrap ${
                               isInvalidRange
                                 ? "bg-rose-950/30 border-rose-500/30 text-rose-300 line-through"
-                                : "bg-indigo-950/30 border-indigo-500/20 text-indigo-300"
+                                : "bg-emerald-950/30 border-emerald-500/20 text-emerald-300"
                             }`}
                           >
                             {formatDate(entry.endDate)}
@@ -506,7 +506,7 @@ const Settings = () => {
                     name="name"
                     value={serviceForm.name}
                     onChange={handleFormChange}
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
+                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-emerald-500 transition"
                     placeholder="Haircut"
                   />
                 </div>
@@ -519,7 +519,7 @@ const Settings = () => {
                     value={serviceForm.description}
                     onChange={handleFormChange}
                     rows={2}
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition resize-none"
+                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-emerald-500 transition resize-none"
                     placeholder="Classic haircut with wash"
                   />
                 </div>
@@ -535,7 +535,7 @@ const Settings = () => {
                       min="0"
                       value={serviceForm.durationHours}
                       onChange={handleFormChange}
-                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition "
+                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-emerald-500 transition "
                       placeholder="e.g. 1.5"
                     />
                   </div>
@@ -548,7 +548,7 @@ const Settings = () => {
                       name="price"
                       value={serviceForm.price}
                       onChange={handleFormChange}
-                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-emerald-500 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="0"
                     />
                   </div>
@@ -567,7 +567,7 @@ const Settings = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-medium py-2.5 rounded-lg transition"
+                    className="flex-1 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-sm font-medium py-2.5 rounded-lg transition"
                   >
                     {submitting ? "Adding..." : "Add Service"}
                   </button>
@@ -599,7 +599,7 @@ const Settings = () => {
                       required
                       value={timeOffForm.startDate}
                       onChange={handleTimeOffFormChange}
-                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
+                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-emerald-500 transition"
                     />
                   </div>
                   <div>
@@ -612,7 +612,7 @@ const Settings = () => {
                       required
                       value={timeOffForm.endDate}
                       onChange={handleTimeOffFormChange}
-                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
+                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-emerald-500 transition"
                     />
                   </div>
                 </div>
@@ -625,7 +625,7 @@ const Settings = () => {
                     name="reason"
                     value={timeOffForm.reason}
                     onChange={handleTimeOffFormChange}
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
+                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-emerald-500 transition"
                     placeholder="e.g. Personal leave"
                   />
                 </div>
@@ -648,7 +648,7 @@ const Settings = () => {
                   <button
                     type="submit"
                     disabled={timeOffSubmitting}
-                    className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-medium py-2.5 rounded-lg transition"
+                    className="flex-1 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-sm font-medium py-2.5 rounded-lg transition"
                   >
                     {timeOffSubmitting ? "Adding..." : "Add Time Off"}
                   </button>

@@ -157,6 +157,28 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const user = await User.findOne({
+      resetPasswordToken: token,
+    });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired verification link" });
+    }
+    user.isVerified = true;
+    user.resetPasswordToken = null;
+    await user.save();
+
+    res.status(200).json({ message: "Email verified successfully" });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -164,4 +186,5 @@ module.exports = {
   logout,
   forgotPassword,
   resetPassword,
+  verifyEmail,
 };

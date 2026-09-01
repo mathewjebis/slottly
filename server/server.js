@@ -31,6 +31,7 @@ app.use("/api/services", require("./src/routes/serviceRoutes"));
 app.use("/api/availability", require("./src/routes/availabilityRoutes"));
 app.use("/api/timeoff", require("./src/routes/timeOffRoutes"));
 app.use("/api/appointments", require("./src/routes/appointmentRoutes"));
+app.use("/api/providers", require("./src/routes/providerRoutes"));
 
 mongoose
   .connect(process.env.MONGO_URI)

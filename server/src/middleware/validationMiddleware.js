@@ -29,7 +29,7 @@ const validateLogin = [
 
 const validateServiceUpdate = [
   body("name").optional().trim().notEmpty().withMessage("Service name cannot be empty"),
-  body("duration").optional().isInt({min:5}).withMessage("Duration must be at least 5 minutes"
+  body("duration").optional().isInt({ min: 5 }).withMessage("Duration must be at least 5 minutes"
   ),
   body("price").optional().isFloat({min:0}).withMessage("Price must be a positive number"),
   body("isActive").optional().isBoolean().withMessage("isActive must be a boolean"),

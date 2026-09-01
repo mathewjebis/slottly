@@ -57,7 +57,7 @@ const Login = () => {
             type="email"
             value={email}
             onChange={(e) => (setEmail(e.target.value), setError(null))}
-            className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
+            className="w-full bg-slate-800/50 border border-slate-700/60 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all duration-200"
             placeholder="you@example.com"
           />
         </div>
@@ -69,7 +69,7 @@ const Login = () => {
             </label>
             <Link
               to="/forgot-password"
-              className="text-sm text-indigo-400 hover:text-indigo-300"
+              className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
             >
               Forgot password?
             </Link>
@@ -79,7 +79,7 @@ const Login = () => {
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => (setPassword(e.target.value), setError(null))}
-            className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
+            className="w-full bg-slate-800/50 border border-slate-700/60 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all duration-200"
             placeholder="••••••••"
           />
           <button
@@ -94,7 +94,7 @@ const Login = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition"
+          className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition-all duration-200"
         >
           {loading ? "Signing in..." : "Sign in"}
         </button>
@@ -102,7 +102,7 @@ const Login = () => {
 
       <p className="text-slate-400 text-sm text-center mt-6">
         Don't have an account?{" "}
-        <Link to="/register" className="text-indigo-400 hover:text-indigo-300">
+        <Link to="/register" className="text-emerald-400 hover:text-emerald-300 transition-colors font-medium">
           Register
         </Link>
       </p>

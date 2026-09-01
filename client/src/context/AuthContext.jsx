@@ -21,11 +21,13 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = useCallback((data) => {
+    // Verify email status on login
     const userProfile = {
       _id: data._id,
       name: data.name,
       email: data.email,
       role: data.role,
+      isVerified: data.isVerified || false,
     };
 
     setUser(userProfile);

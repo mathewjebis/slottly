@@ -15,6 +15,7 @@ const {
   getMe,
   forgotPassword,
   resetPassword,
+  verifyEmail,
 } = require("../controllers/authController");
 const { protect } = require("../middleware/authMiddleware");
 const {
@@ -31,5 +32,6 @@ router.post("/logout", logout);
 router.get("/me", protect, getMe);
 router.post("/forgot-password", validateForgotPassword, forgotPassword);
 router.post("/reset-password/:token", validateResetPassword, resetPassword);
+router.get("/verify-email/:token", verifyEmail);
 
 module.exports = router;

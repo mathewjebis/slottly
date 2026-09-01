@@ -48,7 +48,7 @@ const ForgotPassword = () => {
           <p className="text-slate-400 text-sm mb-8">{success}</p>
           <Link
             to="/login"
-            className="text-indigo-400 hover:text-indigo-300 text-sm"
+            className="text-emerald-400 hover:text-emerald-300 text-sm"
           >
             Back to login
           </Link>
@@ -75,21 +75,21 @@ const ForgotPassword = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
+                className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-emerald-500 transition"
                 placeholder="you@example.com"
               />
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition"
+              className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition-all duration-200"
             >
               {loading ? "Sending..." : "Send reset link"}
             </button>
           </form>
           <p className="text-slate-400 text-sm text-center mt-6">
             Remember your password?{" "}
-            <Link to="/login" className="text-indigo-400 hover:text-indigo-300">
+            <Link to="/login" className="text-emerald-400 hover:text-emerald-300">
               Sign in
             </Link>
           </p>

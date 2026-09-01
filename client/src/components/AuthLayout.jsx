@@ -1,10 +1,10 @@
 const AuthLayout = ({ children }) => {
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
-      <div className="absolute top-[-20%] left-[-10%] w-125 h-125 bg-indigo-600/30 rounded-full blur-[120px] animate-pulse" />
+      <div className="absolute top-[-20%] left-[-10%] w-125 h-125 bg-emerald-600/30 rounded-full blur-[120px] animate-pulse" />
       <div className="absolute bottom-[-20%] right-[-10%] w-125 h-125 bg-violet-600/30 rounded-full blur-[120px] animate-pulse" />
       <div className="relative z-10 w-full max-w-5xl flex rounded-2xl overflow-hidden shadow-2xl">
-        <div className="hidden lg:flex flex-col   w-[45%] bg-indigo-950/80 border border-indigo-500/30 backdrop-blur-sm p-10">
+        <div className="hidden lg:flex flex-col   w-[45%] bg-emerald-950/80 border border-emerald-500/30 backdrop-blur-sm p-10">
           <div>
             <h2 className="text-2xl font-bold text-white mb-6 leading-tight ">
               Book smarter.
@@ -22,7 +22,7 @@ const AuthLayout = ({ children }) => {
                 { icon: "■ ", text: "Smart scheduling" },
               ].map((item) => (
                 <div key={item.text} className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-lg font-bold text-indigo-400">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-lg font-bold text-emerald-400">
                     {item.icon}
                   </div>
                   <span className="text-slate-300 text-sm">{item.text}</span>
