@@ -4,7 +4,10 @@ const {
   getAvailability,
 } = require("../controllers/availabilityController");
 const { protect, requireRole } = require("../middleware/authMiddleware");
-const { validateAvailability } = require("../middleware/validationMiddleware");
+const {
+  validateAvailability,
+  validateObjectIdParam,
+} = require("../middleware/validationMiddleware");
 
 const router = express.Router();
 
@@ -19,6 +22,7 @@ router.get(
   "/:providerId",
   protect,
   requireRole("provider", "customer"),
+  validateObjectIdParam("providerId"),
   getAvailability,
 );
 

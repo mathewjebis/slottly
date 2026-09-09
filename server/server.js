@@ -4,6 +4,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const morgan = require("morgan");
+const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const cookieParser = require("cookie-parser");
 
@@ -24,6 +25,13 @@ const limiter = rateLimit({
 
 const app = express();
 app.set("trust proxy", 1);
+app.use(
+  helmet({
+    // API-only server — no HTML views, so the default CSP just adds noise
+    // to Thunder Client/browser devtools without protecting anything real.
+    contentSecurityPolicy: false,
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(

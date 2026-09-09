@@ -1,9 +1,20 @@
 const { body, validationResult } = require("express-validator");
+const mongoose = require("mongoose");
 
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+};
+
+// Guards any route with an :id / :providerId param so a malformed value
+// returns a clean 400 instead of falling through to Mongoose's CastError
+// (which previously surfaced as a generic 500).
+const validateObjectIdParam = (paramName) => (req, res, next) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params[paramName])) {
+    return res.status(400).json({ message: `Invalid ${paramName}` });
   }
   next();
 };
@@ -117,4 +128,5 @@ module.exports = {
   validateBooking,
   validateForgotPassword,
   validateResetPassword,
+  validateObjectIdParam,
 };

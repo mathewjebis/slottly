@@ -68,6 +68,13 @@ const createAppointment = async (req, res) => {
 
     res.status(201).json(populated);
   } catch (error) {
+    // Duplicate-key error from the partial unique index on
+    // (provider, date, startTime) — two requests raced for the same slot.
+    if (error.code === 11000) {
+      return res
+        .status(409)
+        .json({ message: "This slot was just booked by someone else. Please pick another." });
+    }
     console.error(error);
     res
       .status(500)

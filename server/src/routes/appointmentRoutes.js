@@ -12,7 +12,10 @@ const {
   completeAppointment,
 } = require("../controllers/appointmentController");
 
-const { validateBooking } = require("../middleware/validationMiddleware");
+const {
+  validateBooking,
+  validateObjectIdParam,
+} = require("../middleware/validationMiddleware");
 
 router.get(
   "/available-slots",
@@ -28,18 +31,30 @@ router.post(
   createAppointment,
 );
 router.get("/my-appointments", protect, getMyAppointments);
-router.get("/:id", protect, getAppointmentById);
-router.patch("/:id/cancel", protect, cancelAppointment);
+router.get(
+  "/:id",
+  protect,
+  validateObjectIdParam("id"),
+  getAppointmentById,
+);
+router.patch(
+  "/:id/cancel",
+  protect,
+  validateObjectIdParam("id"),
+  cancelAppointment,
+);
 router.patch(
   "/:id/confirm",
   protect,
   requireRole("provider"),
+  validateObjectIdParam("id"),
   confirmAppointment,
 );
 router.patch(
   "/:id/complete",
   protect,
   requireRole("provider"),
+  validateObjectIdParam("id"),
   completeAppointment,
 );
 

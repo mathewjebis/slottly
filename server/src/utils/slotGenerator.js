@@ -19,8 +19,11 @@ const getAvailableSlots = async (providerId, serviceId, dateString) => {
     return [];
   }
 
+  // Use UTC consistently — matches parseDateUTC/getUTCDayRange below, so
+  // "today" and "current time" don't drift from the day-boundary math
+  // depending on the server's local timezone.
   const now = new Date();
-  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  const todayStr = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}-${String(now.getUTCDate()).padStart(2, "0")}`;
 
   // Prevent returning slots for past days
   if (cleanDateStr < todayStr) {
@@ -63,7 +66,7 @@ const getAvailableSlots = async (providerId, serviceId, dateString) => {
   const endMins = timeToMinutes(daySchedule.endTime);
 
   const isToday = cleanDateStr === todayStr;
-  const currentMinsNow = now.getHours() * 60 + now.getMinutes();
+  const currentMinsNow = now.getUTCHours() * 60 + now.getUTCMinutes();
 
   const step = duration >= 30 ? (duration % 30 === 0 ? 30 : 15) : 15;
 

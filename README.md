@@ -48,38 +48,38 @@ Slottly is a modern, production-grade appointment booking platform built with th
 ### Backend
 - **Runtime**: Node.js & Express 5
 - **Database**: MongoDB & Mongoose ORM
-- **Security & Utilities**: `jsonwebtoken`, `bcryptjs`, `cookie-parser`, `express-validator`, `express-rate-limit`, `cors`
+- **Security & Utilities**: `jsonwebtoken`, `bcryptjs`, `cookie-parser`, `express-validator`, `express-rate-limit`, `cors`, `helmet`
 - **Email Delivery**: Brevo Transactional Email REST API
 
 ---
 
 ## 📂 Codebase Architecture
 
-```
 slottly/
-├── client/                      # React Frontend (Vite)
-│   ├── public/                  # Static assets & _redirects
-│   ├── src/
-│   │   ├── api/                 # Axios instance with credentials
-│   │   ├── components/          # Reusable UI (Navbar, Logo, AuthLayout, DashboardLayout)
-│   │   ├── context/             # AuthContext state & session management
-│   │   ├── lib/                 # Formatting utilities & helpers
-│   │   ├── pages/               # Landing, Login, Register, VerifyEmail, ForgotPassword,
-│   │   │                        # ResetPassword, Dashboard, Providers, Book,
-│   │   │                        # Appointments, AppointmentConfirm, Settings
-│   │   ├── App.jsx              # Protected routes & role-based routing
-│   │   └── main.jsx             # Entry point
-│   └── vite.config.js
+├── client/ # React Frontend (Vite)
+│ ├── public/ # Static assets & _redirects
+│ ├── src/
+│ │ ├── api/ # Axios instance with credentials
+│ │ ├── components/ # Reusable UI (Navbar, Logo, AuthLayout, DashboardLayout)
+│ │ ├── context/ # AuthContext state & session management
+│ │ ├── lib/ # Formatting utilities & helpers
+│ │ ├── pages/ # Landing, Login, Register, VerifyEmail, ForgotPassword,
+│ │ │ # ResetPassword, Dashboard, Providers, Book,
+│ │ │ # Appointments, AppointmentConfirm, Settings
+│ │ ├── App.jsx # Protected routes & role-based routing
+│ │ └── main.jsx # Entry point
+│ └── vite.config.js
 │
-└── server/                      # Express Backend REST API
-    ├── server.js                # App initialization & middleware
-    └── src/
-        ├── controllers/         # Auth, Service, Availability, TimeOff, Appointment, Provider
-        ├── middleware/          # JWT protect, requireRole, express-validator schemas
-        ├── models/              # User, Service, Availability, TimeOff, Appointment schemas
-        ├── routes/              # Express endpoint routers
-        └── utils/               # slotGenerator, sendEmail, dateHelpers, timeHelpers
-```
+└── server/ # Express Backend REST API
+├── server.js # App initialization & middleware
+└── src/
+├── controllers/ # Auth, Service, Availability, TimeOff, Appointment, Provider
+├── middleware/ # JWT protect, requireRole, ObjectId validation, express-validator schemas
+├── models/ # User, Service, Availability, TimeOff, Appointment schemas
+├── routes/ # Express endpoint routers
+└── utils/ # slotGenerator, sendEmail, dateHelpers, timeHelpers
+
+
 
 ---
 
@@ -88,18 +88,18 @@ slottly/
 ### Setup Instructions
 
 1. **Clone Repository**
-   ```bash
+```bash
    git clone https://github.com/mathewjebis/slottly.git
    cd slottly
-   ```
+```
 
 2. **Backend Configuration**
-   ```bash
+```bash
    cd server
    npm install
-   ```
+```
    Create `.env` in `server/`:
-   ```env
+```env
    PORT=5000
    JWT_SECRET=your_super_secret_jwt_key
    MONGO_URI=mongodb+srv://user:pass@cluster.mongodb.net/slottly
@@ -107,18 +107,19 @@ slottly/
    GMAIL_USER=your_sender_email@example.com
    BREVO_API_KEY=your_brevo_api_key
    NODE_ENV=development
-   ```
+```
    Run backend server:
-   ```bash
+```bash
    npm run dev
-   ```
+```
 
 3. **Frontend Configuration**
-   ```bash
+```bash
    cd ../client
    npm install
+   cp .env.example .env
    npm run dev
-   ```
+```
    Access at `http://localhost:5173`.
 
 ---
