@@ -1,52 +1,59 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router';
-import api from '../api/axios';
-import AuthLayout from '../components/AuthLayout';
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router";
+import api from "../api/axios";
+import AuthLayout from "../components/AuthLayout";
 
 const VerifyEmail = () => {
   const { token } = useParams();
   const navigate = useNavigate();
-  const [status, setStatus] = useState('verifying'); // verifying, success, error
+  const [status, setStatus] = useState("verifying");
 
   useEffect(() => {
     const verify = async () => {
       try {
         await api.get(`/auth/verify-email/${token}`);
-        setStatus('success');
-        setTimeout(() => navigate('/login'), 3000);
-      } catch (err) {
-        setStatus('error');
+        setStatus("success");
+        setTimeout(() => navigate("/login"), 3000);
+      } catch {
+        setStatus("error");
       }
     };
     verify();
   }, [token, navigate]);
 
   return (
-    <AuthLayout>
+    <AuthLayout title="Email verification">
       <div className="text-center">
-        {status === 'verifying' && (
+        {status === "verifying" && (
           <>
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500 mx-auto mb-4" />
-            <p className="text-white">Verifying your email...</p>
+            <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+            <p className="text-ink-muted">Verifying your email...</p>
           </>
         )}
-        {status === 'success' && (
+        {status === "success" && (
           <>
-            <div className="text-4xl text-green-400 mb-4">✓</div>
-            <h1 className="text-2xl font-bold text-white mb-2">Email Verified!</h1>
-            <p className="text-slate-300">Redirecting to login in 3 seconds...</p>
+            <h2 className="font-display text-xl font-bold text-ink">
+              Email verified
+            </h2>
+            <p className="mt-2 text-sm text-ink-muted">
+              Redirecting to login in a few seconds...
+            </p>
           </>
         )}
-        {status === 'error' && (
+        {status === "error" && (
           <>
-            <div className="text-4xl text-red-400 mb-4">!</div>
-            <h1 className="text-2xl font-bold text-white mb-2">Verification Failed</h1>
-            <p className="text-slate-300 mb-4">The link may be expired or invalid.</p>
+            <h2 className="font-display text-xl font-bold text-ink">
+              Verification failed
+            </h2>
+            <p className="mt-2 text-sm text-ink-muted">
+              The link may be expired or invalid.
+            </p>
             <button
-              onClick={() => navigate('/login')}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded"
+              type="button"
+              onClick={() => navigate("/login")}
+              className="mt-6 rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-white"
             >
-              Go to Login
+              Go to login
             </button>
           </>
         )}

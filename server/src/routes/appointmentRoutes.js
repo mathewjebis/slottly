@@ -6,6 +6,7 @@ const {
   getSlots,
   createAppointment,
   getMyAppointments,
+  getAppointmentById,
   cancelAppointment,
   confirmAppointment,
   completeAppointment,
@@ -27,6 +28,7 @@ router.post(
   createAppointment,
 );
 router.get("/my-appointments", protect, getMyAppointments);
+router.get("/:id", protect, getAppointmentById);
 router.patch("/:id/cancel", protect, cancelAppointment);
 router.patch(
   "/:id/confirm",

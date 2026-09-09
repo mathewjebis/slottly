@@ -4,6 +4,32 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
 
+const clientUrl = () => (process.env.CLIENT_URL || "http://localhost:5173").trim();
+
+const cookieOptions = () => ({
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
+
+const userPayload = (user) => ({
+  _id: user._id,
+  name: user.name,
+  email: user.email,
+  role: user.role,
+  isVerified: user.isVerified,
+});
+
+const signAndSetCookie = (res, user) => {
+  const token = jwt.sign(
+    { id: user._id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" },
+  );
+  res.cookie("token", token, cookieOptions());
+};
+
 const register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -12,26 +38,36 @@ const register = async (req, res) => {
       return res.status(400).json({ message: "Email already registered" });
     }
 
-    const user = await User.create({ name, email, password, role });
-
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" },
-    );
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+    const verifyToken = crypto.randomBytes(32).toString("hex");
+    const user = await User.create({
+      name,
+      email,
+      password,
+      role,
+      emailVerificationToken: verifyToken,
     });
 
-    res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    });
+    signAndSetCookie(res, user);
+
+    try {
+      const verifyUrl = `${clientUrl()}/verify-email/${verifyToken}`;
+      await sendEmail({
+        to: user.email,
+        subject: "Verify your Slottly email",
+        html: `
+        <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
+          <h2 style="color:#0f766e">Welcome to Slottly</h2>
+          <p>Thanks for signing up. Please verify your email address.</p>
+          <a href="${verifyUrl}" style="display:inline-block;background:#0f766e;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;margin:16px 0">Verify Email</a>
+          <p style="color:#6b7280;font-size:14px">If you didn't create this account, you can ignore this email.</p>
+        </div>
+      `,
+      });
+    } catch (emailError) {
+      console.error("Verification email failed:", emailError.message);
+    }
+
+    res.status(201).json(userPayload(user));
   } catch (error) {
     console.error(error);
     res
@@ -52,24 +88,9 @@ const login = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" },
-    );
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-    res.status(200).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    });
+    signAndSetCookie(res, user);
+    res.status(200).json(userPayload(user));
   } catch (error) {
     console.error(error);
     res
@@ -108,22 +129,24 @@ const forgotPassword = async (req, res) => {
       user.resetPasswordExpires = Date.now() + 30 * 60 * 1000;
       await user.save();
 
-      const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+      const resetUrl = `${clientUrl()}/reset-password/${resetToken}`;
 
       await sendEmail({
         to: user.email,
         subject: "Reset your Slottly password",
         html: `
         <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
-          <h2 style="color:#4f46e5">Reset your password</h2>
+          <h2 style="color:#0f766e">Reset your password</h2>
           <p>You requested a password reset for your Slottly account.</p>
-          <a href="${resetUrl}" style="display:inline-block;background:#4f46e5;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;margin:16px 0">Reset Password</a>
+          <a href="${resetUrl}" style="display:inline-block;background:#0f766e;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;margin:16px 0">Reset Password</a>
           <p style="color:#6b7280;font-size:14px">This link expires in 30 minutes. If you didn't request this, ignore this email.</p>
         </div>
       `,
       });
     }
-    res.status(200).json({ message: "If an account exists for that email, a reset link has been sent." });
+    res.status(200).json({
+      message: "If an account exists for that email, a reset link has been sent.",
+    });
   } catch (error) {
     console.error(error);
     res
@@ -161,13 +184,15 @@ const verifyEmail = async (req, res) => {
   try {
     const { token } = req.params;
     const user = await User.findOne({
-      resetPasswordToken: token,
+      emailVerificationToken: token,
     });
     if (!user) {
-      return res.status(400).json({ message: "Invalid or expired verification link" });
+      return res
+        .status(400)
+        .json({ message: "Invalid or expired verification link" });
     }
     user.isVerified = true;
-    user.resetPasswordToken = null;
+    user.emailVerificationToken = null;
     await user.save();
 
     res.status(200).json({ message: "Email verified successfully" });

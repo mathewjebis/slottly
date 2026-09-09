@@ -3,15 +3,20 @@ const TimeOff = require("../models/TimeOff");
 const Appointment = require("../models/Appointment");
 const Service = require("../models/Service");
 const { timeToMinutes, minutesToTime } = require("./timeHelpers");
+const {
+  getDayOfWeekUTC,
+  getUTCDayRange,
+} = require("./dateHelpers");
 
 const getAvailableSlots = async (providerId, serviceId, dateString) => {
   const service = await Service.findById(serviceId);
   if (!service) {
     throw new Error("Service not found");
   }
-  const date = new Date(dateString + "T00:00:00");
-  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const dayOfWeek = dayNames[date.getDay()];
+
+  const cleanDateStr = String(dateString).slice(0, 10);
+  const dayOfWeek = getDayOfWeekUTC(cleanDateStr);
+  const { start: dayStart, end: dayEnd } = getUTCDayRange(cleanDateStr);
 
   const availability = await Availability.findOne({ provider: providerId });
   if (!availability) {
@@ -24,11 +29,11 @@ const getAvailableSlots = async (providerId, serviceId, dateString) => {
   if (!daySchedule) {
     return [];
   }
-  
+
   const timeOff = await TimeOff.findOne({
     provider: providerId,
-    startDate: { $lte: date },
-    endDate: { $gte: date },
+    startDate: { $lte: dayEnd },
+    endDate: { $gte: dayStart },
   });
   if (timeOff) {
     return [];
@@ -36,30 +41,47 @@ const getAvailableSlots = async (providerId, serviceId, dateString) => {
 
   const existingAppointments = await Appointment.find({
     provider: providerId,
-    date: date,
+    date: { $gte: dayStart, $lte: dayEnd },
     status: { $ne: "cancelled" },
   });
 
   const slots = [];
   const duration = service.duration;
+  const startMins = timeToMinutes(daySchedule.startTime);
+  const endMins = timeToMinutes(daySchedule.endTime);
 
-  let currentTime = daySchedule.startTime;
-  const endTime = daySchedule.endTime;
+  // Check if target date is today to filter out past slots
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  const isToday = cleanDateStr === todayStr;
+  const currentMinsNow = now.getHours() * 60 + now.getMinutes();
 
-  while (timeToMinutes(currentTime) + duration <= timeToMinutes(endTime)) {
-    const slotEnd = timeToMinutes(currentTime) + duration;
+  const step = duration >= 30 ? (duration % 30 === 0 ? 30 : 15) : 15;
+
+  let currentMins = startMins;
+  while (currentMins + duration <= endMins) {
+    const slotEnd = currentMins + duration;
+
+    // Skip past slots if target date is today
+    if (isToday && currentMins <= currentMinsNow) {
+      currentMins += step;
+      continue;
+    }
 
     const isBooked = existingAppointments.some((appt) => {
       const apptStart = timeToMinutes(appt.startTime);
       const apptEnd = timeToMinutes(appt.endTime);
-      return timeToMinutes(currentTime) < apptEnd && slotEnd > apptStart;
+      return currentMins < apptEnd && slotEnd > apptStart;
     });
 
     if (!isBooked) {
-      slots.push({ startTime: currentTime, endTime: minutesToTime(slotEnd) });
+      slots.push({
+        startTime: minutesToTime(currentMins),
+        endTime: minutesToTime(slotEnd),
+      });
     }
 
-    currentTime = minutesToTime(slotEnd);
+    currentMins += step;
   }
 
   return slots;

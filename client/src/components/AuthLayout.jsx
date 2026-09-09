@@ -1,42 +1,65 @@
-const AuthLayout = ({ children }) => {
+import { Link } from "react-router";
+import Logo from "./Logo";
+
+const AuthLayout = ({ children, title, subtitle }) => {
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
-      <div className="absolute top-[-20%] left-[-10%] w-125 h-125 bg-emerald-600/30 rounded-full blur-[120px] animate-pulse" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-125 h-125 bg-violet-600/30 rounded-full blur-[120px] animate-pulse" />
-      <div className="relative z-10 w-full max-w-5xl flex rounded-2xl overflow-hidden shadow-2xl">
-        <div className="hidden lg:flex flex-col   w-[45%] bg-emerald-950/80 border border-emerald-500/30 backdrop-blur-sm p-10">
-          <div>
-            <h2 className="text-2xl font-bold text-white mb-6 leading-tight ">
+    <div className="relative min-h-screen overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 mesh-grid opacity-70" />
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-8 sm:px-6">
+        <Link to="/" className="mb-10 w-fit">
+          <Logo size="md" />
+        </Link>
+
+        <div className="grid flex-1 items-center gap-10 lg:grid-cols-2">
+          <div className="hidden lg:block">
+            <p className="mb-3 font-display text-sm font-semibold uppercase tracking-[0.2em] text-accent">
+              Appointment OS
+            </p>
+            <h2 className="font-display text-4xl font-bold leading-tight text-ink">
               Book smarter.
               <br />
               Manage better.
             </h2>
-            <p className="text-slate-400 mb-6">
-              The all-in-one appointment platform for modern service providers
-              and their customers.
+            <p className="mt-4 max-w-md text-ink-muted">
+              Real-time slots from your weekly schedule, time off, and existing
+              bookings — so double-booking never happens.
             </p>
-            <div className="space-y-4  mb-5">
+            <ul className="mt-8 space-y-3 text-sm text-ink-muted">
               {[
-                { icon: "✦", text: "Real-time slot generation" },
-                { icon: "◆", text: "Your data stays private" },
-                { icon: "■ ", text: "Smart scheduling" },
+                "Duration-aware slot generation",
+                "Role-based customer & provider access",
+                "Secure cookie-based authentication",
               ].map((item) => (
-                <div key={item.text} className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-lg font-bold text-emerald-400">
-                    {item.icon}
-                  </div>
-                  <span className="text-slate-300 text-sm">{item.text}</span>
-                </div>
+                <li key={item} className="flex items-center gap-3">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-accent-soft text-xs font-bold text-accent">
+                    ✓
+                  </span>
+                  {item}
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
-          <p className="text-slate-500 text-xs mt-auto">
-            © {new Date().getFullYear()} Slottly. All rights reserved.
-          </p>
+
+          <div className="rounded-2xl border border-line bg-surface-elevated p-6 shadow-[0_20px_60px_-40px_rgba(12,31,28,0.45)] sm:p-8">
+            {(title || subtitle) && (
+              <div className="mb-6">
+                {title && (
+                  <h1 className="font-display text-2xl font-bold text-ink">
+                    {title}
+                  </h1>
+                )}
+                {subtitle && (
+                  <p className="mt-1 text-sm text-ink-muted">{subtitle}</p>
+                )}
+              </div>
+            )}
+            {children}
+          </div>
         </div>
-        <div className="flex-1 bg-slate-900 border border-slate-800 lg:border-l-0 p-8 lg:p-10">
-          {children}
-        </div>
+
+        <p className="mt-10 text-center text-xs text-ink-muted lg:text-left">
+          © {new Date().getFullYear()} Slottly
+        </p>
       </div>
     </div>
   );

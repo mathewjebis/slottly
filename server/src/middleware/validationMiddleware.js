@@ -59,19 +59,25 @@ const validateAvailability = [
   validate,
 ];
 
-const validateTimeOff = [
-  body("startDate").isISO8601().withMessage("startDate must be a valid date"),
-  body("endDate").isISO8601().withMessage("endDate must be a valid date"),
-  validate,
-];
-
 const validateBooking = [
   body("providerId").notEmpty().withMessage("providerId is required"),
   body("serviceId").notEmpty().withMessage("serviceId is required"),
-  body("date").isISO8601().withMessage("date must be a valid date"),
+  body("date")
+    .matches(/^\d{4}-\d{2}-\d{2}$/)
+    .withMessage("date must be YYYY-MM-DD"),
   body("startTime")
     .matches(/^\d{2}:\d{2}$/)
     .withMessage("startTime must be in HH:MM format"),
+  validate,
+];
+
+const validateTimeOff = [
+  body("startDate")
+    .matches(/^\d{4}-\d{2}-\d{2}$/)
+    .withMessage("startDate must be YYYY-MM-DD"),
+  body("endDate")
+    .matches(/^\d{4}-\d{2}-\d{2}$/)
+    .withMessage("endDate must be YYYY-MM-DD"),
   validate,
 ];
 

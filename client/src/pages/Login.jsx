@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
-import Logo from "../components/Logo";
 import AuthLayout from "../components/AuthLayout";
 
 const Login = () => {
@@ -11,7 +10,6 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -34,75 +32,65 @@ const Login = () => {
   };
 
   return (
-    <AuthLayout>
-      <div className="mt-1">
-        <Logo />
-      </div>
-
-      <h1 className="text-2xl font-bold text-white mb-2 mt-4">Welcome back</h1>
-      <p className="text-slate-400 mb-8">Sign in to your Slottly account</p>
-
+    <AuthLayout title="Welcome back" subtitle="Sign in to your Slottly account">
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg mb-6 text-sm">
+        <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
           {error}
         </div>
       )}
-
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2">
+          <label className="mb-1.5 block text-sm font-medium text-ink">
             Email
           </label>
           <input
             type="email"
+            required
             value={email}
-            onChange={(e) => (setEmail(e.target.value), setError(null))}
-            className="w-full bg-slate-800/50 border border-slate-700/60 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all duration-200"
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full rounded-xl border border-line bg-white px-4 py-3 outline-none focus:border-accent"
             placeholder="you@example.com"
           />
         </div>
-
-        <div className="relative">
-          <div className="flex items-center justify-between mb-2">
-            <label className="block text-sm font-medium text-slate-300">
-              Password
-            </label>
+        <div>
+          <div className="mb-1.5 flex items-center justify-between">
+            <label className="text-sm font-medium text-ink">Password</label>
             <Link
               to="/forgot-password"
-              className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
+              className="text-sm font-medium text-accent hover:text-accent-hover"
             >
               Forgot password?
             </Link>
           </div>
-
-          <input
-            type={showPassword ? "text" : "password"}
-            value={password}
-            onChange={(e) => (setPassword(e.target.value), setError(null))}
-            className="w-full bg-slate-800/50 border border-slate-700/60 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all duration-200"
-            placeholder="••••••••"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-10.5 text-slate-400 hover:text-white transition text-sm"
-          >
-            {showPassword ? "Hide" : "Show"}
-          </button>
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-xl border border-line bg-white px-4 py-3 pr-16 outline-none focus:border-accent"
+              placeholder="••••••••"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-ink-muted"
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
         </div>
-
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition-all duration-200"
+          className="w-full rounded-xl bg-accent py-3 font-semibold text-white transition hover:bg-accent-hover disabled:opacity-50"
         >
           {loading ? "Signing in..." : "Sign in"}
         </button>
       </form>
-
-      <p className="text-slate-400 text-sm text-center mt-6">
-        Don't have an account?{" "}
-        <Link to="/register" className="text-emerald-400 hover:text-emerald-300 transition-colors font-medium">
+      <p className="mt-6 text-center text-sm text-ink-muted">
+        Don&apos;t have an account?{" "}
+        <Link to="/register" className="font-semibold text-accent">
           Register
         </Link>
       </p>

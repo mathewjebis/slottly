@@ -1,11 +1,16 @@
 import Navbar from "./Navbar";
 
-const DashboardLayout = ({ children }) => {
+const DashboardLayout = ({ children, wide = false }) => {
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen">
       <Navbar />
-      <main className="max-w-7xl mx-auto px-6 py-8">{children}</main>
+      <main
+        className={`mx-auto px-4 py-8 sm:px-6 ${wide ? "max-w-6xl" : "max-w-6xl"}`}
+      >
+        {children}
+      </main>
     </div>
   );
 };
+
 export default DashboardLayout;

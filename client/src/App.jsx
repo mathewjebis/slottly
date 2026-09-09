@@ -1,48 +1,55 @@
 import { Routes, Route, Navigate } from "react-router";
 import { useAuth } from "./context/AuthContext";
 import { useEffect } from "react";
+import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
+import Appointments from "./pages/Appointments";
 import Settings from "./pages/Settings";
 import Providers from "./pages/Providers";
 import Book from "./pages/Book";
 import VerifyEmail from "./pages/VerifyEmail";
 import AppointmentConfirm from "./pages/AppointmentConfirm";
 
+const Spinner = () => (
+  <div className="flex min-h-screen items-center justify-center">
+    <div className="h-10 w-10 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+  </div>
+);
+
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading)
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
-      </div>
-    );
-  return user ? children : <Navigate to="/login" />;
+  if (loading) return <Spinner />;
+  return user ? children : <Navigate to="/login" replace />;
 };
 
 const ProviderRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading)
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
-      </div>
-    );
-  return user?.role === "provider" ? children : <Navigate to="/dashboard" />;
+  if (loading) return <Spinner />;
+  return user?.role === "provider" ? (
+    children
+  ) : (
+    <Navigate to="/dashboard" replace />
+  );
 };
 
 const CustomerRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading)
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
-      </div>
-    );
-  return user?.role === "customer" ? children : <Navigate to="/dashboard" />;
+  if (loading) return <Spinner />;
+  return user?.role === "customer" ? (
+    children
+  ) : (
+    <Navigate to="/dashboard" replace />
+  );
+};
+
+const PublicOnly = ({ children }) => {
+  const { user, loading } = useAuth();
+  if (loading) return <Spinner />;
+  return user ? <Navigate to="/dashboard" replace /> : children;
 };
 
 const App = () => {
@@ -51,10 +58,29 @@ const App = () => {
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
+
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/" element={<Landing />} />
+      <Route
+        path="/login"
+        element={
+          <PublicOnly>
+            <Login />
+          </PublicOnly>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <PublicOnly>
+            <Register />
+          </PublicOnly>
+        }
+      />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route path="/verify-email/:token" element={<VerifyEmail />} />
       <Route
         path="/dashboard"
         element={
@@ -63,9 +89,14 @@ const App = () => {
           </PrivateRoute>
         }
       />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password/:token" element={<ResetPassword />} />
-      <Route path="/verify-email/:token" element={<VerifyEmail />} />
+      <Route
+        path="/appointments"
+        element={
+          <PrivateRoute>
+            <Appointments />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/settings"
         element={
@@ -104,8 +135,9 @@ const App = () => {
           </PrivateRoute>
         }
       />
-      <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };
+
 export default App;

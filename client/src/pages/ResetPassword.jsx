@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { useParams, useNavigate, Link } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import api from "../api/axios";
 import AuthLayout from "../components/AuthLayout";
-import Logo from "../components/Logo";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -10,7 +9,6 @@ const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
   const { token } = useParams();
   const navigate = useNavigate();
 
@@ -34,68 +32,63 @@ const ResetPassword = () => {
       setLoading(false);
     }
   };
-  return (
-    <AuthLayout>
-      <div>
-        <Logo />
-        <br />
-      </div>
-      <h1 className="text-2xl font-bold text-white mb-2 mt-3">
-        Set new password
-      </h1>
-      <p className="text-slate-400 mb-8">Must be at least 6 characters</p>
 
+  return (
+    <AuthLayout
+      title="Set new password"
+      subtitle="Must be at least 6 characters"
+    >
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg mb-6 text-sm">
+        <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
           {error}
         </div>
       )}
-
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="relative">
-          <label className="block text-sm font-medium text-slate-300 mb-2">
-            New Password
-          </label>
-          <input
-            type={showPassword ? "text" : "password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-emerald-500 transition"
-            placeholder="••••••••"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-10.5 text-slate-400 hover:text-white transition text-sm"
-          >
-            {showPassword ? "Hide" : "Show"}
-          </button>
-        </div>
-
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2">
-            Confirm Password
+          <label className="mb-1.5 block text-sm font-medium text-ink">
+            New password
+          </label>
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-xl border border-line bg-white px-4 py-3 pr-16 outline-none focus:border-accent"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-ink-muted"
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+        </div>
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-ink">
+            Confirm password
           </label>
           <input
             type={showPassword ? "text" : "password"}
+            required
+            minLength={6}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-emerald-500 transition"
-            placeholder="••••••••"
+            className="w-full rounded-xl border border-line bg-white px-4 py-3 outline-none focus:border-accent"
           />
         </div>
-
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition-all duration-200"
+          className="w-full rounded-xl bg-accent py-3 font-semibold text-white disabled:opacity-50"
         >
           {loading ? "Resetting..." : "Reset password"}
         </button>
       </form>
-
-      <p className="text-slate-400 text-sm text-center mt-6">
-        <Link to="/login" className="text-emerald-400 hover:text-emerald-300 transition-colors font-medium">
+      <p className="mt-6 text-center text-sm">
+        <Link to="/login" className="font-semibold text-accent">
           Back to login
         </Link>
       </p>

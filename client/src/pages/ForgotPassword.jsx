@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router";
 import api from "../api/axios";
 import AuthLayout from "../components/AuthLayout";
-import Logo from "../components/Logo";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -29,67 +28,56 @@ const ForgotPassword = () => {
   };
 
   return (
-    <AuthLayout>
-      {!success && (
-        <div>
-          <Logo />
-          <br />
-        </div>
-      )}
-
+    <AuthLayout
+      title={success ? "Check your email" : "Forgot password?"}
+      subtitle={
+        success
+          ? undefined
+          : "Enter your email and we’ll send a reset link"
+      }
+    >
       {success ? (
-        <div className="flex flex-col items-center justify-center min-h-75 text-center">
-          <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-6">
-            <span className="text-3xl">📧</span>
-          </div>
-          <h2 className="text-xl font-bold text-white mb-2">
-            Check your email
-          </h2>
-          <p className="text-slate-400 text-sm mb-8">{success}</p>
+        <div className="text-center">
+          <p className="text-sm text-ink-muted">{success}</p>
           <Link
             to="/login"
-            className="text-emerald-400 hover:text-emerald-300 text-sm"
+            className="mt-6 inline-block text-sm font-semibold text-accent"
           >
             Back to login
           </Link>
         </div>
       ) : (
         <>
-          <h1 className="text-2xl font-bold text-white mb-2 mt-3">
-            Forgot password?
-          </h1>
-          <p className="text-slate-400 mb-8">
-            Enter your email and we'll send you a reset link
-          </p>
           {error && (
-            <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg mb-6 text-sm">
+            <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
               {error}
             </div>
           )}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className="mb-1.5 block text-sm font-medium text-ink">
                 Email
               </label>
               <input
                 type="email"
+                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-emerald-500 transition"
+                className="w-full rounded-xl border border-line bg-white px-4 py-3 outline-none focus:border-accent"
                 placeholder="you@example.com"
               />
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition-all duration-200"
+              className="w-full rounded-xl bg-accent py-3 font-semibold text-white disabled:opacity-50"
             >
               {loading ? "Sending..." : "Send reset link"}
             </button>
           </form>
-          <p className="text-slate-400 text-sm text-center mt-6">
+          <p className="mt-6 text-center text-sm text-ink-muted">
             Remember your password?{" "}
-            <Link to="/login" className="text-emerald-400 hover:text-emerald-300">
+            <Link to="/login" className="font-semibold text-accent">
               Sign in
             </Link>
           </p>

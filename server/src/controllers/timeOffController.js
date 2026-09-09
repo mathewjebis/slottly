@@ -1,15 +1,20 @@
 const TimeOff = require("../models/TimeOff");
+const { parseDateUTC } = require("../utils/dateHelpers");
 
 const addTimeOff = async (req, res) => {
   try {
     const { startDate, endDate, reason } = req.body;
-    if(new Date(endDate)<new Date(startDate)){
-      return res.status(400).json({message:"End date cannot be before start date"})
+    const start = parseDateUTC(String(startDate).slice(0, 10));
+    const end = parseDateUTC(String(endDate).slice(0, 10));
+    if (end < start) {
+      return res
+        .status(400)
+        .json({ message: "End date cannot be before start date" });
     }
     const timeOff = await TimeOff.create({
       provider: req.user._id,
-      startDate,
-      endDate,
+      startDate: start,
+      endDate: end,
       reason,
     });
     res.status(201).json(timeOff);
