@@ -1,10 +1,11 @@
+const mongoose = require("mongoose");
 const User = require("../models/User");
 const Service = require("../models/Service");
 
 const getAllProviders = async (req, res) => {
   try {
     const providers = await User.find({ role: "provider" }).select(
-      "name email",
+      "name email role",
     );
 
     const providersWithServices = await Promise.all(
@@ -33,8 +34,12 @@ const getAllProviders = async (req, res) => {
 
 const getProviderById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.providerId)) {
+      return res.status(404).json({ message: "Provider not found" });
+    }
+
     const provider = await User.findById(req.params.providerId).select(
-      "name email",
+      "name email role",
     );
     if (!provider || provider.role !== "provider") {
       return res.status(404).json({ message: "Provider not found" });

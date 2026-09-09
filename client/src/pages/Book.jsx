@@ -22,8 +22,8 @@ const Book = () => {
       try {
         const res = await api.get(`/providers/${providerId}`);
         setProvider(res.data);
-      } catch {
-        setError("Failed to load provider details");
+      } catch (err) {
+        setError(err.response?.data?.message || "Failed to load provider details");
       } finally {
         setLoadingProvider(false);
       }
@@ -103,7 +103,7 @@ const Book = () => {
       <DashboardLayout>
         <div className="rounded-2xl border border-rose-200 bg-rose-50 p-8 text-center">
           <h2 className="font-display text-xl font-bold text-rose-800">
-            Provider not found
+            {error || "Provider not found"}
           </h2>
           <button
             type="button"
