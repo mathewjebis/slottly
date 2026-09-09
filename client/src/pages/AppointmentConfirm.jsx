@@ -7,61 +7,83 @@ const AppointmentConfirm = () => {
 
   return (
     <DashboardLayout>
-      <div className="mx-auto max-w-lg animate-rise text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-soft text-2xl font-bold text-accent">
+      <div className="mx-auto max-w-md animate-rise text-center">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-100 text-2xl font-bold text-emerald-700 shadow-xs">
           ✓
         </div>
-        <h1 className="mt-6 font-display text-3xl font-bold text-ink">
-          Appointment booked
+        <h1 className="mt-5 font-display text-2xl font-bold text-ink sm:text-3xl">
+          Appointment Booked!
         </h1>
-        <p className="mt-3 text-ink-muted">
-          Your request is pending confirmation from the provider. You can track
-          it anytime under Appointments.
+        <p className="mt-2 text-sm text-ink-muted">
+          Your booking request has been submitted successfully.
         </p>
 
         {(details.date || details.serviceName) && (
-          <div className="mt-8 rounded-2xl border border-line bg-white p-6 text-left">
-            <p className="text-xs font-semibold uppercase tracking-wider text-accent">
-              Details
-            </p>
-            <dl className="mt-4 space-y-3 text-sm">
-              {details.providerName && (
-                <div className="flex justify-between gap-4">
-                  <dt className="text-ink-muted">Provider</dt>
-                  <dd className="font-medium text-ink">{details.providerName}</dd>
-                </div>
-              )}
+          <div className="mt-8 overflow-hidden rounded-2xl border border-line bg-white shadow-sm text-left">
+            <div className="border-b border-line bg-surface-elevated/60 px-5 py-3.5 flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-accent">
+                Booking Summary
+              </span>
+              <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700 border border-amber-200">
+                Pending Confirmation
+              </span>
+            </div>
+
+            <div className="p-5 space-y-4 text-sm">
               {details.serviceName && (
-                <div className="flex justify-between gap-4">
-                  <dt className="text-ink-muted">Service</dt>
-                  <dd className="font-medium text-ink">{details.serviceName}</dd>
+                <div>
+                  <span className="text-xs text-ink-muted block uppercase font-medium tracking-wide">
+                    Service
+                  </span>
+                  <p className="font-display text-lg font-bold text-ink mt-0.5">
+                    {details.serviceName}
+                  </p>
                 </div>
               )}
+
+              {details.providerName && (
+                <div className="flex items-center gap-3 pt-2 border-t border-line/60">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft font-display text-sm font-bold text-accent-deep">
+                    {details.providerName.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <span className="text-xs text-ink-muted block">Provider</span>
+                    <p className="font-semibold text-ink">{details.providerName}</p>
+                  </div>
+                </div>
+              )}
+
               {details.date && (
-                <div className="flex justify-between gap-4">
-                  <dt className="text-ink-muted">When</dt>
-                  <dd className="font-medium text-ink">
+                <div className="rounded-xl bg-surface p-3.5 border border-line/70 pt-3">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-ink-muted block mb-1">
+                    Date & Time
+                  </span>
+                  <p className="font-semibold text-ink">
                     {details.date}
-                    {details.startTime ? ` at ${details.startTime}` : ""}
-                  </dd>
+                  </p>
+                  {details.startTime && (
+                    <p className="mt-1 inline-flex items-center gap-1.5 rounded-md bg-accent-soft px-2.5 py-1 text-xs font-bold text-accent-deep">
+                      ⏰ {details.startTime}{details.endTime ? ` – ${details.endTime}` : ""}
+                    </p>
+                  )}
                 </div>
               )}
-            </dl>
+            </div>
           </div>
         )}
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Link
             to="/appointments"
-            className="rounded-xl bg-accent px-6 py-3 text-sm font-semibold text-white hover:bg-accent-hover"
+            className="rounded-xl bg-accent px-6 py-3 text-sm font-semibold text-white transition hover:bg-accent-hover shadow-xs"
           >
-            View appointments
+            View My Appointments
           </Link>
           <Link
             to="/providers"
-            className="rounded-xl border border-line bg-white px-6 py-3 text-sm font-semibold text-ink hover:border-accent"
+            className="rounded-xl border border-line bg-white px-6 py-3 text-sm font-semibold text-ink transition hover:border-accent"
           >
-            Book another
+            Book Another
           </Link>
         </div>
       </div>
