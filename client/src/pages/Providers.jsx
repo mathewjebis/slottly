@@ -15,7 +15,7 @@ const Providers = () => {
       try {
         const res = await api.get("/providers");
         setProviders(res.data);
-      } catch (err) {
+      } catch {
         setError("Failed to load providers");
       } finally {
         setLoading(false);

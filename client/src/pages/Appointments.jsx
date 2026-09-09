@@ -16,7 +16,7 @@ const Appointments = () => {
     try {
       const res = await api.get("/appointments/my-appointments");
       setAppointments(res.data);
-    } catch (err) {
+    } catch {
       setError("Failed to load appointments");
     } finally {
       setLoading(false);

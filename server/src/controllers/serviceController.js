@@ -58,10 +58,10 @@ const updateService = async (req, res) => {
         .json({ message: "Not authorized to update this service" });
     }
     const { name, description, duration, price, isActive } = req.body;
-    if (name) service.name = name;
+    if (name !== undefined) service.name = name;
     if (description !== undefined) service.description = description;
-    if (duration) service.duration = duration;
-    if (price) service.price = price;
+    if (duration !== undefined) service.duration = duration;
+    if (price !== undefined) service.price = price;
     if (isActive !== undefined) service.isActive = isActive;
 
     const updatedService = await service.save();

@@ -46,7 +46,7 @@ const validateService = [
 const validateAvailability = [
   body("weeklySchedule")
     .isArray()
-    .withMessage("Weekly schedule must be a non-empty array"),
+    .withMessage("Weekly schedule must be an array"),
   body("weeklySchedule.*.day")
     .isIn(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
     .withMessage("Invalid day"),
@@ -56,6 +56,22 @@ const validateAvailability = [
   body("weeklySchedule.*.endTime")
     .matches(/^\d{2}:\d{2}$/)
     .withMessage("endTime must be in HH:MM format"),
+  body("weeklySchedule").custom((weeklySchedule) => {
+    if (!Array.isArray(weeklySchedule)) return true;
+    const days = new Set();
+    for (const entry of weeklySchedule) {
+      if (days.has(entry.day)) {
+        throw new Error(`Duplicate day found in schedule: ${entry.day}`);
+      }
+      days.add(entry.day);
+      if (entry.startTime >= entry.endTime) {
+        throw new Error(
+          `startTime (${entry.startTime}) must be earlier than endTime (${entry.endTime}) for ${entry.day}`,
+        );
+      }
+    }
+    return true;
+  }),
   validate,
 ];
 

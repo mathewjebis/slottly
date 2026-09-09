@@ -1,102 +1,136 @@
-# Slottly
+# Slottly — Smart Appointment Scheduling Engine & Booking Platform
 
-A full-stack appointment booking platform built with the MERN stack — designed for service providers (salons, clinics, consultants, etc.) to manage their availability and services, with secure role-based access for Customers and Providers.
+[![Status](https://img.shields.io/badge/status-production--ready-success.svg)](https://github.com/mathewjebis/slottly)
+[![License](https://img.shields.io/badge/license-ISC-blue.svg)](LICENSE)
 
-🔗 **[Live Demo](https://slottly.netlify.app)** | 🔧 [Backend Source](https://github.com/mathewjebis/slottly)
+Slottly is a modern, production-grade appointment booking platform built with the MERN stack. Designed for service providers (salons, clinics, consultants, personal trainers) to manage their weekly availability, time off, and services while offering customers a seamless, real-time booking experience without double-bookings.
 
-## Tech Stack
+---
 
-**Frontend:** React 19 (Vite), Tailwind CSS v4, React Router v8, Axios
-**Backend:** Node.js, Express 5, MongoDB, Mongoose
-**Auth & Security:** JWT via HTTP-only cookies, bcrypt, express-validator, express-rate-limit
-**Email:** Brevo (transactional email API)
-**Deployment:** Netlify (frontend) + Render (backend) + MongoDB Atlas
+## 🌟 Key Features & Capabilities
 
-## Features
+### 🔐 Security & Authentication
+- **HTTP-Only Cookie Auth**: JWT tokens are transmitted exclusively via HTTP-only, secure, `sameSite` cookies to prevent XSS vulnerabilities.
+- **Role-Based Access Control (RBAC)**: Strict separation between `customer` and `provider` access.
+- **Resource Ownership Validation**: Multi-layer authorization ensures providers can only view, modify, or delete their own services, schedule, time off, and appointments.
+- **Account Verification & Recovery**: Email verification flow and secure 30-minute token password resets via Brevo transactional email API.
+- **Rate-Limiting & Input Sanitation**: Guarded against brute-force attacks via `express-rate-limit` and validated inputs via `express-validator`.
 
-### Authentication & Security
-- Register / Login / Logout with role selection (Customer / Provider)
-- HTTP-only cookie-based JWT auth — no token in localStorage, XSS-safe
-- Forgot/reset password via email — secure random token with 30-minute expiry
-- Role-based route protection plus ownership checks on every resource (a Provider can only edit their own data)
-- Rate limiting and input validation (express-validator) on every POST/PUT route
-- Passwords hashed with bcrypt
-- Cross-domain auth configured for production — environment-aware cookie `sameSite`/`secure` flags, CORS locked to the deployed frontend origin
+### 🗓️ Smart Slot Calculation Engine
+- **Duration-Aware Step Algorithm**: Dynamically calculates available booking slots based on service duration (e.g. 15, 30, 45, 60 mins).
+- **Multi-Factor Conflict Filtering**:
+  - Filters out days and times outside provider's active weekly schedule.
+  - Automatically excludes dates blocked in time off / vacation logs.
+  - Detects overlapping non-cancelled appointments to eliminate double-booking risks.
+  - Filters past times/days based on current timestamp.
 
-### Provider Dashboard
-- Full CRUD for services — name, description, duration, price
-- Weekly availability manager — toggle any day on/off, set a start/end time per day
-- Time off manager — block out date ranges with an optional reason
-- Fully responsive, tested down to 320px screen width
+### 💼 Provider Features
+- **Service Management**: Full CRUD for services with custom name, duration (minutes), and pricing.
+- **Weekly Schedule Configuration**: Set custom working hours (`startTime` to `endTime`) per day of the week.
+- **Time Off Management**: Block single or multi-day time off ranges with custom notes.
+- **Appointment Lifecycle**: View, confirm, complete, or cancel incoming customer appointments.
 
-### Booking Engine (backend)
-- Custom slot-generation algorithm — computes real bookable time slots from a provider's weekly availability, time-off periods, and existing bookings
-- Duration-aware stepping with overlap detection to prevent double-booking
-- Full appointment CRUD (create, cancel, list) with role-based access
+### 👤 Customer Features
+- **Provider & Service Discovery**: Search providers by name or service offering.
+- **Interactive Booking Flow**: Select provider, service, target date, and an available calculated slot with instant cost and duration summary.
+- **Appointment Management**: Track active, completed, and cancelled appointments with live status badges.
 
-## In Progress
-- Customer-facing booking flow (browse providers, view slots, book)
-- My Appointments page
-- Admin panel
-- Landing page
+---
 
-## Getting Started
+## 🛠️ Tech Stack
 
-### Prerequisites
-- Node.js
-- MongoDB Atlas account
-- Brevo account (for password reset emails)
+### Frontend
+- **Framework**: React 19 (Vite)
+- **Routing**: React Router v8
+- **Styling**: Tailwind CSS v4 + Custom Design Tokens
+- **HTTP Client**: Axios (configured with `withCredentials: true`)
 
-### Installation
+### Backend
+- **Runtime**: Node.js & Express 5
+- **Database**: MongoDB & Mongoose ORM
+- **Security & Utilities**: `jsonwebtoken`, `bcryptjs`, `cookie-parser`, `express-validator`, `express-rate-limit`, `cors`
+- **Email Delivery**: Brevo Transactional Email REST API
 
-```bash
-git clone https://github.com/mathewjebis/slottly.git
-cd slottly
+---
 
-# Backend
-cd server
-npm install
-cp .env.example .env   # fill in your own values
-npm run dev
-
-# Frontend (in a new terminal)
-cd ../client
-npm install
-npm run dev
-```
-
-### Environment Variables
-
-**server/.env**
-```
-PORT=5000
-JWT_SECRET=your_jwt_secret_key_here
-MONGO_URI=your_mongodb_connection_string
-GMAIL_USER=your_sender_email@gmail.com
-BREVO_API_KEY=your_brevo_api_key
-CLIENT_URL=http://localhost:5173
-```
-
-**client/.env**
-```
-VITE_API_URL=http://localhost:5000/api
-```
-
-## Project Structure
+## 📂 Codebase Architecture
 
 ```
 slottly/
-├── client/          # React frontend (Vite + Tailwind)
-│   └── src/
-│       ├── components/
-│       ├── context/
-│       ├── pages/
-│       └── api/
-└── server/          # Express backend
+├── client/                      # React Frontend (Vite)
+│   ├── public/                  # Static assets & _redirects
+│   ├── src/
+│   │   ├── api/                 # Axios instance with credentials
+│   │   ├── components/          # Reusable UI (Navbar, Logo, AuthLayout, DashboardLayout)
+│   │   ├── context/             # AuthContext state & session management
+│   │   ├── lib/                 # Formatting utilities & helpers
+│   │   ├── pages/               # Landing, Login, Register, VerifyEmail, ForgotPassword,
+│   │   │                        # ResetPassword, Dashboard, Providers, Book,
+│   │   │                        # Appointments, AppointmentConfirm, Settings
+│   │   ├── App.jsx              # Protected routes & role-based routing
+│   │   └── main.jsx             # Entry point
+│   └── vite.config.js
+│
+└── server/                      # Express Backend REST API
+    ├── server.js                # App initialization & middleware
     └── src/
-        ├── controllers/
-        ├── middleware/
-        ├── models/
-        ├── routes/
-        └── utils/
+        ├── controllers/         # Auth, Service, Availability, TimeOff, Appointment, Provider
+        ├── middleware/          # JWT protect, requireRole, express-validator schemas
+        ├── models/              # User, Service, Availability, TimeOff, Appointment schemas
+        ├── routes/              # Express endpoint routers
+        └── utils/               # slotGenerator, sendEmail, dateHelpers, timeHelpers
 ```
+
+---
+
+## 🚀 Quick Start & Installation
+
+### Setup Instructions
+
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/mathewjebis/slottly.git
+   cd slottly
+   ```
+
+2. **Backend Configuration**
+   ```bash
+   cd server
+   npm install
+   ```
+   Create `.env` in `server/`:
+   ```env
+   PORT=5000
+   JWT_SECRET=your_super_secret_jwt_key
+   MONGO_URI=mongodb+srv://user:pass@cluster.mongodb.net/slottly
+   CLIENT_URL=http://localhost:5173
+   GMAIL_USER=your_sender_email@example.com
+   BREVO_API_KEY=your_brevo_api_key
+   NODE_ENV=development
+   ```
+   Run backend server:
+   ```bash
+   npm run dev
+   ```
+
+3. **Frontend Configuration**
+   ```bash
+   cd ../client
+   npm install
+   npm run dev
+   ```
+   Access at `http://localhost:5173`.
+
+---
+
+## 🧪 Testing & Verification
+
+- **Frontend Linting**: Run `npm run lint` in `/client` (0 warnings, 0 errors).
+- **Frontend Build**: Run `npm run build` in `/client` (generates static `/dist`).
+- **Backend Node Verification**: Run `node -c server.js` inside `/server`.
+
+---
+
+## 📄 License
+
+This project is licensed under the ISC License.

@@ -10,11 +10,23 @@ const {
 
 const getAvailableSlots = async (providerId, serviceId, dateString) => {
   const service = await Service.findById(serviceId);
-  if (!service) {
-    throw new Error("Service not found");
+  if (!service || !service.isActive) {
+    return [];
   }
 
   const cleanDateStr = String(dateString).slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(cleanDateStr)) {
+    return [];
+  }
+
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+
+  // Prevent returning slots for past days
+  if (cleanDateStr < todayStr) {
+    return [];
+  }
+
   const dayOfWeek = getDayOfWeekUTC(cleanDateStr);
   const { start: dayStart, end: dayEnd } = getUTCDayRange(cleanDateStr);
 
@@ -50,9 +62,6 @@ const getAvailableSlots = async (providerId, serviceId, dateString) => {
   const startMins = timeToMinutes(daySchedule.startTime);
   const endMins = timeToMinutes(daySchedule.endTime);
 
-  // Check if target date is today to filter out past slots
-  const now = new Date();
-  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   const isToday = cleanDateStr === todayStr;
   const currentMinsNow = now.getHours() * 60 + now.getMinutes();
 

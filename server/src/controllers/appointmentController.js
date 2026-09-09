@@ -108,10 +108,11 @@ const getAppointmentById = async (req, res) => {
       return res.status(404).json({ message: "Appointment not found" });
     }
 
-    const isCustomer =
-      appointment.customer._id.toString() === req.user._id.toString();
-    const isProvider =
-      appointment.provider._id.toString() === req.user._id.toString();
+    const customerId = appointment.customer?._id?.toString() || appointment.customer?.toString();
+    const providerId = appointment.provider?._id?.toString() || appointment.provider?.toString();
+
+    const isCustomer = customerId === req.user._id.toString();
+    const isProvider = providerId === req.user._id.toString();
     if (!isCustomer && !isProvider) {
       return res
         .status(403)
@@ -134,10 +135,11 @@ const cancelAppointment = async (req, res) => {
       return res.status(404).json({ message: "Appointment not found" });
     }
 
-    const isCustomer =
-      appointment.customer.toString() === req.user._id.toString();
-    const isProvider =
-      appointment.provider.toString() === req.user._id.toString();
+    const customerId = appointment.customer?._id?.toString() || appointment.customer?.toString();
+    const providerId = appointment.provider?._id?.toString() || appointment.provider?.toString();
+
+    const isCustomer = customerId === req.user._id.toString();
+    const isProvider = providerId === req.user._id.toString();
     if (!isCustomer && !isProvider) {
       return res
         .status(403)
