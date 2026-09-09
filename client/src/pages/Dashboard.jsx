@@ -40,10 +40,10 @@ const Dashboard = () => {
   ).length;
 
   const stats = [
-    { label: "Upcoming", value: upcoming.length },
-    { label: "Pending", value: pending },
-    { label: "Completed", value: completed },
-    { label: "Today", value: todayCount },
+    { label: "Upcoming", value: upcoming.length, color: "border-teal-200 bg-teal-50/50 text-teal-900" },
+    { label: "Pending", value: pending, color: "border-amber-200 bg-amber-50/50 text-amber-900" },
+    { label: "Completed", value: completed, color: "border-slate-200 bg-slate-50/50 text-slate-900" },
+    { label: "Today", value: todayCount, color: "border-emerald-200 bg-emerald-50/50 text-emerald-900" },
   ];
 
   return (
@@ -92,12 +92,12 @@ const Dashboard = () => {
               {stats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-2xl border border-line bg-white p-5"
+                  className={`rounded-2xl border ${stat.color} p-5 shadow-xs transition-transform hover:-translate-y-0.5`}
                 >
                   <p className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
                     {stat.label}
                   </p>
-                  <p className="mt-2 font-display text-3xl font-bold text-ink">
+                  <p className="mt-2 font-display text-3xl font-bold">
                     {stat.value}
                   </p>
                 </div>

@@ -296,33 +296,77 @@ const Settings = () => {
                     rows={2}
                     className="rounded-xl border border-line px-3 py-2.5 outline-none focus:border-accent sm:col-span-2"
                   />
-                  <input
-                    required
-                    type="number"
-                    min="5"
-                    step="5"
-                    value={serviceForm.durationMinutes}
-                    onChange={(e) =>
-                      setServiceForm({
-                        ...serviceForm,
-                        durationMinutes: e.target.value,
-                      })
-                    }
-                    placeholder="Duration (minutes)"
-                    className="rounded-xl border border-line px-3 py-2.5 outline-none focus:border-accent"
-                  />
-                  <input
-                    required
-                    type="number"
-                    min="0"
-                    step="1"
-                    value={serviceForm.price}
-                    onChange={(e) =>
-                      setServiceForm({ ...serviceForm, price: e.target.value })
-                    }
-                    placeholder="Price (₹)"
-                    className="rounded-xl border border-line px-3 py-2.5 outline-none focus:border-accent"
-                  />
+                  <div className="sm:col-span-2">
+                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-muted">
+                      Service Duration
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { label: "15 min", val: "15" },
+                        { label: "30 min", val: "30" },
+                        { label: "45 min", val: "45" },
+                        { label: "1 hr", val: "60" },
+                        { label: "1 hr 15m", val: "75" },
+                        { label: "1.5 hrs", val: "90" },
+                        { label: "2 hrs", val: "120" },
+                      ].map((preset) => (
+                        <button
+                          key={preset.val}
+                          type="button"
+                          onClick={() =>
+                            setServiceForm({
+                              ...serviceForm,
+                              durationMinutes: preset.val,
+                            })
+                          }
+                          className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                            serviceForm.durationMinutes === preset.val
+                              ? "bg-accent text-white shadow-sm"
+                              : "border border-line bg-surface text-ink-muted hover:border-accent/40 hover:text-ink"
+                          }`}
+                        >
+                          {preset.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-muted">
+                      Exact Minutes
+                    </label>
+                    <input
+                      required
+                      type="number"
+                      min="5"
+                      step="5"
+                      value={serviceForm.durationMinutes}
+                      onChange={(e) =>
+                        setServiceForm({
+                          ...serviceForm,
+                          durationMinutes: e.target.value,
+                        })
+                      }
+                      placeholder="e.g. 30"
+                      className="w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none transition focus:border-accent focus:bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-muted">
+                      Price (₹)
+                    </label>
+                    <input
+                      required
+                      type="number"
+                      min="0"
+                      step="1"
+                      value={serviceForm.price}
+                      onChange={(e) =>
+                        setServiceForm({ ...serviceForm, price: e.target.value })
+                      }
+                      placeholder="e.g. 500"
+                      className="w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none transition focus:border-accent focus:bg-white"
+                    />
+                  </div>
                 </div>
                 <div className="mt-4 flex gap-2">
                   <button
