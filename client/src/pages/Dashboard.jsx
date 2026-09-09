@@ -104,13 +104,13 @@ const Dashboard = () => {
               ))}
             </div>
 
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-display text-xl font-bold text-ink">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2.5 sm:gap-4">
+              <h2 className="font-display text-lg font-bold text-ink sm:text-xl">
                 Upcoming appointments
               </h2>
               <Link
                 to="/appointments"
-                className="text-sm font-semibold text-accent hover:text-accent-hover"
+                className="shrink-0 text-sm font-semibold text-accent hover:text-accent-hover"
               >
                 View all
               </Link>
